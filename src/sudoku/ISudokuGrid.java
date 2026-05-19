@@ -1,3 +1,5 @@
+package sudoku;
+
 public interface ISudokuGrid {
 
   /**
