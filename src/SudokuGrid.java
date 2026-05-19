@@ -19,11 +19,9 @@ public class SudokuGrid implements ISudokuGrid {
     if (rows <= 0 || columns <= 0) {
       throw new IllegalArgumentException("Grid dimensions must be positive");
     } else if (rows > 3 || columns > 3) {
-      throw new IllegalArgumentException("Grids of more than 3 sudoku squares in either direction are not yet supported");
+      throw new IllegalArgumentException("Grids of more than 3 sudoku squares in either direction" +
+          "are not supported");
     }
-
-    squareRows = rows;
-    squareColumns = columns;
 
     grid = new int[rows * 3][columns * 3];
     for (int row = 0; row < grid.length; row++) {
@@ -43,7 +41,8 @@ public class SudokuGrid implements ISudokuGrid {
   @Override
   public void setValue(int row, int column, int value) {
     if ((value < 1 || value > 9) && value != -1) {
-      throw new IllegalArgumentException("value must be either -1, or between 1 and 9 inclusive.");
+      throw new IllegalArgumentException("value must be either -1, or between 1 and 9" +
+          "inclusive.");
     } else {
       grid[row][column] = value;
     }
