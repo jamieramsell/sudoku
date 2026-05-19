@@ -6,8 +6,8 @@ public class SudokuGrid implements ISudokuGrid {
   private int squareRows;
   private int squareColumns;
 
-  public SudokuGrid(int rows, int columns) {
-    initialiseGrid(rows, columns);
+  public SudokuGrid(int squareRows, int squareColumns) {
+    initialiseGrid(squareRows, squareColumns);
   }
 
   @Override
@@ -116,6 +116,7 @@ public class SudokuGrid implements ISudokuGrid {
   @Override
   public String toString() {
     StringBuilder output = new StringBuilder();
+    String separator = "-".repeat(formatRow(0).length());
 
     for (int row = 0; row < grid.length; row++) {
       if (row > 0) {
@@ -123,23 +124,31 @@ public class SudokuGrid implements ISudokuGrid {
       }
 
       if (row > 0 && row % 3 == 0) {
-        output.append("-".repeat((squareColumns * 6) + 1)).append('\n');
+        output.append(separator).append('\n');
       }
 
-      for (int column = 0; column < grid[row].length; column++) {
-        if (column > 0) {
-          output.append(' ');
-        }
-
-        if (column > 0 && column % 3 == 0) {
-          output.append("| ");
-        }
-
-        output.append(grid[row][column]);
-      }
+      output.append(formatRow(row));
     }
 
     return output.toString();
+  }
+
+  private String formatRow(int row) {
+    StringBuilder rowOutput = new StringBuilder();
+
+    for (int column = 0; column < grid[row].length; column++) {
+      if (column > 0) {
+        rowOutput.append(' ');
+      }
+
+      if (column > 0 && column % 3 == 0) {
+        rowOutput.append("| ");
+      }
+
+      rowOutput.append(grid[row][column]);
+    }
+
+    return rowOutput.toString();
   }
 
   private static boolean hasDuplicates(int[] values) {
