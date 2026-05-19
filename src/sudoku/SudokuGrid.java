@@ -1,3 +1,5 @@
+package sudoku;
+
 public class SudokuGrid implements ISudokuGrid {
 
   int size;

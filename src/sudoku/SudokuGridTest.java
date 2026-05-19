@@ -1,3 +1,5 @@
+package sudoku;
+
 public class SudokuGridTest {
   public static void main(String[] args) {
     shouldFormatSingleSquareGrid();
@@ -5,7 +7,7 @@ public class SudokuGridTest {
   }
 
   private static void shouldFormatSingleSquareGrid() {
-    SudokuGrid grid = new SudokuGrid(1, 1);
+    ISudokuGrid grid = new SudokuGrid(1);
 
     int[][] values = {
       {1, 2, 3},
@@ -25,7 +27,7 @@ public class SudokuGridTest {
   }
 
   private static void shouldFormatFourSquareGrid() {
-    SudokuGrid grid = new SudokuGrid(2, 2);
+    ISudokuGrid grid = new SudokuGrid(2);
 
     int[][] values = {
       {1, 2, 3, 4, 5, 6},
@@ -51,7 +53,7 @@ public class SudokuGridTest {
     assertEquals(expected, grid.toString(), "2x2 square grid");
   }
 
-  private static void setValues(SudokuGrid grid, int[][] values) {
+  private static void setValues(ISudokuGrid grid, int[][] values) {
     for (int row = 0; row < values.length; row++) {
       for (int column = 0; column < values[row].length; column++) {
         grid.setValue(row, column, values[row][column]);
