@@ -12,40 +12,41 @@ public interface ISudokuGrid {
   public int[][] initialiseGrid(int rows, int columns);
 
   /**
-   * Gets the current value of a square in a sudoku grid.
-   * <p>Coordinates are indexed from (0, 0), which is the upper left-most square in the grid.
+   * Gets the current value of a cell in a sudoku grid.
+   * <p>Coordinates are indexed from (0, 0), which is the upper left-most cell in the grid.
    * @author Jamie
-   * @param row The row, or x-coordinate, of the square
-   * @param column The column, or y-coordinate, of the square
-   * @return The value currently stored at the square, or -1 if the square is empty.
+   * @param row The row, or x-coordinate, of the cell
+   * @param column The column, or y-coordinate, of the cell
+   * @return The value currently stored at the cell, or -1 if the cell is empty.
    */
   public int getValue(int row, int column);
 
   /**
-   * Sets the value of a square in a sudoku grid.
-   * <p>Coordinates are indexed from (0, 0), which is the upper left-most square in the grid.
+   * Sets the value of a cell in a sudoku grid.
+   * <p>Coordinates are indexed from (0, 0), which is the upper left-most cell in the grid.
+   * <p>Note that {@code 1 <= value <= 9}
    * @author Jamie
-   * @param row The row, or x-coordinate, of the square
-   * @param column The column, or y-coordinate, of the square
+   * @param row The row, or x-coordinate, of the cell
+   * @param column The column, or y-coordinate, of the cell
    */
-  public void setValue(int row, int column);
+  public void setValue(int row, int column, int value);
 
   /**
    * Determines whether or not the current state of the sudoku grid is a valid solution so far.
    * @author Jamie
-   * @return true if the grid is valid; false if there are any incompatible squares.
+   * @return true if the grid is valid; false if there are any incompatible cells.
    */
   public boolean isValid();
 
   /**
    * Determines whether or not the sudoku grid has yet been solved.
    * @author Jamie
-   * @return true if the grid has been solved; false if there are any incompatible or empty squares.
+   * @return true if the grid has been solved; false if there are any incompatible or empty cells.
    */
   public boolean isSolved();
 
   /**
-   * Empties the sudoku grid of values.
+   * Empties the sudoku grid of values, updates the stored grid, and returns a copy of it.
    * @author Jamie
    * @return the emptied grid.
    */
