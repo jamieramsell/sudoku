@@ -3,6 +3,12 @@ public class SudokuGrid implements ISudokuGrid {
   int size;
   int[][] grid;
   int[][] solution;
+  StringBuilder gridStringBuilderCache;
+  String gridStringCache;
+  int[] rowStartIndices;
+  int[] rowEndIndices;
+  boolean[] dirtyRows;
+  boolean stringCacheInitialised;
 
   /* To do - finish constructor
    * create a random puzzle
@@ -12,6 +18,7 @@ public class SudokuGrid implements ISudokuGrid {
     this.size = size;
     this.grid = initialiseGrid(size, size);
     this.solution = initialiseGrid(size, size);
+    this.stringCacheInitialised = false;
   }
 
   @Override
@@ -38,7 +45,10 @@ public class SudokuGrid implements ISudokuGrid {
     if (value < 1 || value > 9) {
       throw new IllegalArgumentException("value must be >0 and <10.");
     } else {
-      grid[row][column] = value;
+      if (grid[row][column] != value) {
+        grid[row][column] = value;
+        markRowAsDirty(row);
+      }
     }
   }
 
@@ -61,6 +71,7 @@ public class SudokuGrid implements ISudokuGrid {
       for (int col = 0; col < size; col++) {
         grid[row][col] = -1;
       }
+      markRowAsDirty(row);
     }
 
     return grid.clone();
@@ -73,19 +84,32 @@ public class SudokuGrid implements ISudokuGrid {
     System.out.println(toString());
   }
 
-  // To do - optimise toString() to use cache rather than generate a new string every time.
   @Override
   public String toString() {
+    ensureStringCacheInitialised();
+    updateDirtyRowsInCache();
+    if (gridStringCache == null) {
+      gridStringCache = gridStringBuilderCache.toString();
+    }
+    return gridStringCache;
 
-    StringBuffer string_to_return = new StringBuffer();
+  }
 
-    // Generate each row as a line, with an empty line between rows, and a line of dashes between
-    // squares.
+  private void ensureStringCacheInitialised() {
+    if (stringCacheInitialised) {
+      return;
+    }
 
-    for (int row = 0; row < size * 3; row++) {
+    int gridRows = size * 3;
+    this.gridStringBuilderCache = new StringBuilder();
+    this.rowStartIndices = new int[gridRows];
+    this.rowEndIndices = new int[gridRows];
+    this.dirtyRows = new boolean[gridRows];
+
+    for (int row = 0; row < gridRows; row++) {
 
       if (row != 0) {
-        string_to_return.append("\n\n");
+        gridStringBuilderCache.append("\n\n");
         if (row / 3 == 0) {
 
           // 5 characters per square; 3 characters per seperator
@@ -93,32 +117,76 @@ public class SudokuGrid implements ISudokuGrid {
           int num_columns = (size * 5) + ((size - 1) * 3);
 
           for (int i = 0; i < num_columns; i++) {
-            string_to_return.append("-");
+            gridStringBuilderCache.append("-");
           }
 
-          string_to_return.append("\n\n");
+          gridStringBuilderCache.append("\n\n");
 
         }
       }
 
-      // Generate each column with a space in between, with a | between squares.
+      rowStartIndices[row] = gridStringBuilderCache.length();
+      gridStringBuilderCache.append(buildRowString(row));
+      rowEndIndices[row] = gridStringBuilderCache.length();
 
-      for (int col = 0; col < size * 3; col++) {
-
-        if (col != 0) {
-          string_to_return.append(" ");
-          if (col / 3 == 0) {
-            string_to_return.append("| ");
-          }
-        }
-
-        string_to_return.append(grid[row][col]);
-
-      }
     }
 
-    return string_to_return.toString();
+    this.gridStringCache = gridStringBuilderCache.toString();
+    this.stringCacheInitialised = true;
+  }
 
+  private String buildRowString(int row) {
+    StringBuilder rowString = new StringBuilder();
+    for (int col = 0; col < size * 3; col++) {
+
+      if (col != 0) {
+        rowString.append(" ");
+        if (col / 3 == 0) {
+          rowString.append("| ");
+        }
+      }
+
+      rowString.append(grid[row][col]);
+    }
+    return rowString.toString();
+  }
+
+  private void markRowAsDirty(int row) {
+    if (dirtyRows != null && row >= 0 && row < dirtyRows.length) {
+      dirtyRows[row] = true;
+      gridStringCache = null;
+    }
+  }
+
+  private void updateDirtyRowsInCache() {
+    if (dirtyRows == null) {
+      return;
+    }
+
+    for (int row = 0; row < dirtyRows.length; row++) {
+      if (dirtyRows[row]) {
+        replaceRowInCache(row, buildRowString(row));
+        dirtyRows[row] = false;
+      }
+    }
+  }
+
+  private void replaceRowInCache(int row, String newRowString) {
+    int rowStart = rowStartIndices[row];
+    int rowEnd = rowEndIndices[row];
+    int originalLength = rowEnd - rowStart;
+    int replacementLength = newRowString.length();
+    int delta = replacementLength - originalLength;
+
+    gridStringBuilderCache.replace(rowStart, rowEnd, newRowString);
+    rowEndIndices[row] = rowStart + replacementLength;
+
+    if (delta != 0) {
+      for (int remainingRow = row + 1; remainingRow < rowStartIndices.length; remainingRow++) {
+        rowStartIndices[remainingRow] += delta;
+        rowEndIndices[remainingRow] += delta;
+      }
+    }
   }
 
 }
