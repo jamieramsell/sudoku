@@ -78,8 +78,9 @@ public class SudokuSolverTest {
   }
 
   private static int[][] copyGrid(int[][] sourceGrid) {
-    int[][] gridCopy = new int[sourceGrid.length][sourceGrid[0].length];
+    int[][] gridCopy = new int[sourceGrid.length][];
     for (int row = 0; row < sourceGrid.length; row++) {
+      gridCopy[row] = new int[sourceGrid[row].length];
       System.arraycopy(sourceGrid[row], 0, gridCopy[row], 0, sourceGrid[row].length);
     }
     return gridCopy;
