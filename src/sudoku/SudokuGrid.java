@@ -56,9 +56,20 @@ public class SudokuGrid implements ISudokuGrid {
     return false;
   }
 
-  // To do
   @Override
   public boolean isSolved() {
+    return (isValid() && !hasEmptyCells());
+  }
+
+  // Convenience function for isSolved() method to check whether the grid has any empty cells
+  private boolean hasEmptyCells() {
+    for (int[] row : grid) {
+      for (int cell : row) {
+        if (cell == -1) {
+          return true;
+        }
+      }
+    }
     return false;
   }
 
