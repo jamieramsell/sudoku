@@ -16,16 +16,23 @@ public class SudokuGrid implements ISudokuGrid {
 
   @Override
   public int[][] initialiseGrid(int rows, int columns) {
+    if (rows <= 0 || columns <= 0) {
+      throw new IllegalArgumentException("Grid dimensions must be positive");
+    } else if (rows > 3 || columns > 3) {
+      throw new IllegalArgumentException("Grids of more than 3 sudoku squares in either direction are not yet supported");
+    }
 
-    int[][] grid = new int[rows * 3][columns * 3];
-    // Initialise all squares as empty
-    for (int row = 0; row < rows * 3; row++) {
-      for (int col = 0; col < columns * 3; col++) {
-        grid[row][col] = -1;
+    squareRows = rows;
+    squareColumns = columns;
+
+    grid = new int[rows * 3][columns * 3];
+    for (int row = 0; row < grid.length; row++) {
+      for (int column = 0; column < grid[row].length; column++) {
+        grid[row][column] = -1;
       }
     }
-    return grid;
 
+    return grid;
   }
 
   @Override
@@ -35,8 +42,8 @@ public class SudokuGrid implements ISudokuGrid {
 
   @Override
   public void setValue(int row, int column, int value) {
-    if (value < 1 || value > 9) {
-      throw new IllegalArgumentException("value must be >0 and <10.");
+    if ((value < 1 || value > 9) && value != -1) {
+      throw new IllegalArgumentException("value must be either -1, or between 1 and 9 inclusive.");
     } else {
       grid[row][column] = value;
     }
@@ -76,49 +83,41 @@ public class SudokuGrid implements ISudokuGrid {
   // To do - optimise toString() to use cache rather than generate a new string every time.
   @Override
   public String toString() {
+    StringBuilder output = new StringBuilder();
+    String separator = "-".repeat(formatRow(0).length());
 
-    StringBuffer string_to_return = new StringBuffer();
-
-    // Generate each row as a line, with an empty line between rows, and a line of dashes between
-    // squares.
-
-    for (int row = 0; row < size * 3; row++) {
-
-      if (row != 0) {
-        string_to_return.append("\n\n");
-        if (row / 3 == 0) {
-
-          // 5 characters per square; 3 characters per seperator
-          // Num seperators = num squares - 1
-          int num_columns = (size * 5) + ((size - 1) * 3);
-
-          for (int i = 0; i < num_columns; i++) {
-            string_to_return.append("-");
-          }
-
-          string_to_return.append("\n\n");
-
+    for (int row = 0; row < grid.length; row++) {
+      if (row > 0) {
+        output.append('\n');
+      
+        if (row % 3 == 0) {
+          output.append(separator).append('\n');
         }
       }
 
-      // Generate each column with a space in between, with a | between squares.
-
-      for (int col = 0; col < size * 3; col++) {
-
-        if (col != 0) {
-          string_to_return.append(" ");
-          if (col / 3 == 0) {
-            string_to_return.append("| ");
-          }
-        }
-
-        string_to_return.append(grid[row][col]);
-
-      }
+      output.append(formatRow(row));
     }
 
-    return string_to_return.toString();
+    return output.toString();
+  }
+  
+  // Convenience method to format each row of toString() method
+  private String formatRow(int row) {
+    StringBuilder rowOutput = new StringBuilder();
 
+    for (int column = 0; column < grid[row].length; column++) {
+      if (column > 0) {
+        rowOutput.append(' ');
+
+        if (column % 3 == 0) {
+          rowOutput.append("| ");
+        }
+      }
+
+      rowOutput.append(grid[row][column]);
+    }
+
+    return rowOutput.toString();
   }
 
 }
