@@ -2,15 +2,27 @@ package sudoku;
 
 public class SudokuGrid implements ISudokuGrid {
 
+  final int DEFAULT_SIZE = 3;
+
   int size;
   int[][] grid;
   int[][] solution;
+
+  public SudokuGrid() {
+    initialiseAttributes(DEFAULT_SIZE);
+  }
+
+  public SudokuGrid(int size) {
+    initialiseAttributes(size);
+  }
 
   /* To do - finish constructor
    * create a random puzzle
    * store its solution
    */
-  public SudokuGrid(int size) {
+
+  // Convenience method two allow for two constructors with very similar funtionality
+  private void initialiseAttributes(int size) {
     this.size = size;
     this.grid = initialiseGrid(size, size);
     this.solution = initialiseGrid(size, size);
