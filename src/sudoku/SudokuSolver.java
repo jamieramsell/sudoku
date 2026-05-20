@@ -3,37 +3,93 @@ package sudoku;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SudokuSolver {
-  private int[][] grid;
+public class SudokuSolver implements ISudokuSolver {
 
-  public SudokuSolver() {
-    this.grid = new int[0][0];
+  private final ISudokuGrid grid;
+
+  public SudokuSolver(ISudokuGrid grid) {
+    this.grid = grid;
   }
 
-  public SudokuSolver(int[][] grid) {
-    setGrid(grid);
+  public boolean isSolvable() {return countSolutions() > 0;}
+
+  public boolean hasUniqueSolution() {return countSolutions() == 1;}
+
+  public int countSolutions() {
+    return findSolutions().size();
   }
 
-  public void setGrid(int[][] grid) {
-    this.grid = copyGrid(grid);
+  public int[][] solveGrid() {
+    List<int[][]> solutions = findSolutions();
+    return solutions.isEmpty() ? new int[][]{{-1}} : solutions.get(0);
   }
 
-  public int[][] getGrid() {
-    return copyGrid(this.grid);
+  public boolean isValidMove(int row, int column, int value) {
+    
+    // Input Validation //
+
+    if (value == -1) { // Always allow cells to be emptied
+      return true;
+    } else if (value < 1 || value > 9) {
+      throw new IllegalArgumentException("value must be either -1, or between 1 and 9 inclusive.");
+    }
+
+    Tuple2<Integer, Integer> grid_size = grid.getGridSize();
+    if (row < 0 || row > grid_size.first() * 3 || column < 0 || column > grid_size.second() * 3) {
+      throw new IndexOutOfBoundsException("row or column out of bounds");
+    }
+
+    // Check for duplicate values in the row
+    for (int current_col = 0; current_col < grid_size.second(); current_col++) {
+      if (grid.getValue(row, current_col) == value) {
+        return false;
+      }
+    }
+
+    // Check for duplicates in the column
+    for (int current_row = 0; current_row < grid_size.first(); current_row++) {
+      if (grid.getValue(current_row, column) == value) {
+        return false;
+      }
+    }
+
+    // Check for duplicate values in the square
+    return duplicatesInSquare(row, column, value);
+
   }
 
-  public List<int[][]> solveGrid() {
-    int[][] workingGrid = copyGrid(this.grid);
+  // Convenience method to check for duplicate values in the sudoku square of the given cell
+  private boolean duplicatesInSquare(int row, int column, int value) {
+    
+    // Find coordinates of top-left cell in the square
+    int top_left_row = row / 3;
+    int top_left_col = column / 3;
+
+    // Check whether each cell in the square is a duplicate
+    for (int current_row = top_left_row; current_row < top_left_row + 2; current_row++) {
+      for (int current_col = top_left_col; current_col < top_left_col + 2; current_col++) {
+
+        if (value == grid.getValue(current_row, current_col)) {
+          return false;
+        }
+
+      }
+    }
+
+    return true;
+
+  }
+
+  private List<int[][]> findSolutions() {
+    int[][] workingGrid = readGrid();
     List<int[][]> solutions = new ArrayList<>();
+
     if (!isGridShapeValid(workingGrid) || !isGridStateValid(workingGrid)) {
       return solutions;
     }
+
     solve(workingGrid, solutions);
     return solutions;
-  }
-
-  public static List<int[][]> solveGrid(int[][] grid) {
-    return new SudokuSolver(grid).solveGrid();
   }
 
   private void solve(int[][] workingGrid, List<int[][]> solutions) {
@@ -49,35 +105,35 @@ public class SudokuSolver {
       if (isPlacementValid(workingGrid, row, column, candidate)) {
         workingGrid[row][column] = candidate;
         solve(workingGrid, solutions);
-        workingGrid[row][column] = 0;
+        workingGrid[row][column] = -1;
       }
     }
   }
 
-  private int[] findNextEmptyCell(int[][] grid) {
-    for (int row = 0; row < grid.length; row++) {
-      for (int column = 0; column < grid[row].length; column++) {
-        if (isEmptyCell(grid[row][column])) {
-          return new int[] { row, column };
+  private int[] findNextEmptyCell(int[][] candidateGrid) {
+    for (int row = 0; row < candidateGrid.length; row++) {
+      for (int column = 0; column < candidateGrid[row].length; column++) {
+        if (isEmptyCell(candidateGrid[row][column])) {
+          return new int[] {row, column};
         }
       }
     }
     return null;
   }
 
-  private boolean isPlacementValid(int[][] grid, int row, int column, int candidate) {
-    for (int i = 0; i < grid.length; i++) {
-      if (grid[row][i] == candidate || grid[i][column] == candidate) {
+  private boolean isPlacementValid(int[][] candidateGrid, int row, int column, int value) {
+    for (int index = 0; index < candidateGrid.length; index++) {
+      if (candidateGrid[row][index] == value || candidateGrid[index][column] == value) {
         return false;
       }
     }
 
-    int boxSize = (int) Math.sqrt(grid.length);
+    int boxSize = (int) Math.sqrt(candidateGrid.length);
     int boxStartRow = row - (row % boxSize);
     int boxStartColumn = column - (column % boxSize);
     for (int rowOffset = 0; rowOffset < boxSize; rowOffset++) {
       for (int columnOffset = 0; columnOffset < boxSize; columnOffset++) {
-        if (grid[boxStartRow + rowOffset][boxStartColumn + columnOffset] == candidate) {
+        if (candidateGrid[boxStartRow + rowOffset][boxStartColumn + columnOffset] == value) {
           return false;
         }
       }
@@ -102,6 +158,7 @@ public class SudokuSolver {
         return false;
       }
     }
+
     return true;
   }
 
@@ -115,7 +172,7 @@ public class SudokuSolver {
         if (value < 1 || value > candidateGrid.length) {
           return false;
         }
-        candidateGrid[row][column] = 0;
+        candidateGrid[row][column] = -1;
         boolean valid = isPlacementValid(candidateGrid, row, column, value);
         candidateGrid[row][column] = value;
         if (!valid) {
@@ -123,6 +180,7 @@ public class SudokuSolver {
         }
       }
     }
+
     return true;
   }
 
@@ -130,16 +188,24 @@ public class SudokuSolver {
     return value <= 0;
   }
 
-  private int[][] copyGrid(int[][] sourceGrid) {
-    if (sourceGrid == null) {
-      return new int[0][0];
+  private int[][] readGrid() {
+    Tuple2<Integer, Integer> grid_size = grid.getGridSize();
+    int rowCount = grid_size.first() * 3;
+    int columnCount = grid_size.second() * 3;
+    int[][] copiedGrid = new int[rowCount][columnCount];
+
+    for (int row = 0; row < rowCount; row++) {
+      for (int column = 0; column < columnCount; column++) {
+        copiedGrid[row][column] = grid.getValue(row, column);
+      }
     }
+
+    return copiedGrid;
+  }
+
+  private int[][] copyGrid(int[][] sourceGrid) {
     int[][] gridCopy = new int[sourceGrid.length][];
     for (int row = 0; row < sourceGrid.length; row++) {
-      if (sourceGrid[row] == null) {
-        gridCopy[row] = null;
-        continue;
-      }
       gridCopy[row] = new int[sourceGrid[row].length];
       System.arraycopy(sourceGrid[row], 0, gridCopy[row], 0, sourceGrid[row].length);
     }
