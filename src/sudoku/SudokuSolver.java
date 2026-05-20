@@ -11,17 +11,20 @@ public class SudokuSolver implements ISudokuSolver {
     this.grid = grid;
   }
 
-  public boolean isSolvable() {return countSolutions() > 0;}
-
-  public boolean hasUniqueSolution() {return countSolutions() == 1;}
-
-  public int countSolutions() {
-    return findSolutions().size();
+  public boolean isSolvable() {
+    return countSolutions() > 0;
   }
 
-  public int[][] solveGrid() {
-    List<int[][]> solutions = findSolutions();
-    return solutions.isEmpty() ? new int[][]{{-1}} : solutions.get(0);
+  public boolean hasUniqueSolution() {
+    return countSolutions() == 1;
+  }
+
+  public int countSolutions() {
+    return solveGrid().size();
+  }
+
+  public List<int[][]> solveGrid() {
+    return findSolutions();
   }
 
   public boolean isValidMove(int row, int column, int value) {
@@ -84,7 +87,7 @@ public class SudokuSolver implements ISudokuSolver {
     int[][] workingGrid = readGrid();
     List<int[][]> solutions = new ArrayList<>();
 
-    if (!isGridShapeValid(workingGrid) || !isGridStateValid(workingGrid)) {
+    if (!grid.isValid() || !isGridShapeValid(workingGrid) || !isGridStateValid(workingGrid)) {
       return solutions;
     }
 

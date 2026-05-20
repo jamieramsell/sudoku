@@ -1,5 +1,7 @@
 package sudoku;
 
+import java.util.List;
+
 public interface ISudokuSolver {
 
   /**
@@ -8,6 +10,10 @@ public interface ISudokuSolver {
    */
   public boolean isSolvable();
 
+  /**
+   * Determines whether or not the sudoku puzzle has exactly one valid solution.
+   * @return true if the puzzle has one solution; false otherwise
+   */
   public boolean hasUniqueSolution();
 
   public int countSolutions();
@@ -16,7 +22,7 @@ public interface ISudokuSolver {
    * Computes a set of solutions for the sudoku grid in its current state.
    * @return the (possibly empty) set of all possible solutions for the grid.
    */
-  public int[][] solveGrid();
+  public List<int[][]> solveGrid();
 
   /**
    * Checks whether setting a given cell to a certain value would follow the rules of Sudoku.

@@ -1,5 +1,7 @@
 package sudoku;
 
+import java.util.List;
+
 public class SudokuSolverTest {
   public static void main(String[] args) {
     testSolveGridFindsKnownSolution();
@@ -21,9 +23,11 @@ public class SudokuSolverTest {
       {-1, -1, -1, -1, 8, -1, -1, 7, 9}
     };
 
-    SudokuSolver solver = new SudokuSolver(new MockSudokuGrid(puzzle));
+    SudokuSolver solver = new SudokuSolver(new MockSudokuGrid(puzzle, true));
     assertEquals(1, solver.countSolutions(), "Expected exactly one solution for known puzzle");
-    int[][] solution = solver.solveGrid();
+    List<int[][]> solutions = solver.solveGrid();
+    assertEquals(1, solutions.size(), "Expected one solution in the solution set");
+    int[][] solution = solutions.get(0);
     assertEquals(5, solution[0][0], "Solution should preserve fixed values");
     assertEquals(1, solution[8][6], "Solution should solve final row correctly");
   }
@@ -36,9 +40,9 @@ public class SudokuSolverTest {
       {-1, -1, -1, -1}
     };
 
-    SudokuSolver solver = new SudokuSolver(new MockSudokuGrid(invalidPuzzle));
+    SudokuSolver solver = new SudokuSolver(new MockSudokuGrid(invalidPuzzle, false));
     assertEquals(0, solver.countSolutions(), "Expected no solutions for invalid puzzle");
-    assertEquals(-1, solver.solveGrid()[0][0], "Expected sentinel result for unsolved grid");
+    assertEquals(0, solver.solveGrid().size(), "Expected empty solution set for invalid puzzle");
   }
 
   private static void testSolveGridDoesNotMutateOriginalGrid() {
@@ -50,7 +54,7 @@ public class SudokuSolverTest {
     };
 
     int[][] originalCopy = copyGrid(puzzle);
-    SudokuSolver solver = new SudokuSolver(new MockSudokuGrid(puzzle));
+    SudokuSolver solver = new SudokuSolver(new MockSudokuGrid(puzzle, true));
     solver.solveGrid();
     assertGridEquals(originalCopy, puzzle, "solveGrid should not mutate input grid");
   }
@@ -89,9 +93,11 @@ public class SudokuSolverTest {
 
   private static final class MockSudokuGrid implements ISudokuGrid {
     private final int[][] values;
+    private final boolean valid;
 
-    private MockSudokuGrid(int[][] values) {
+    private MockSudokuGrid(int[][] values, boolean valid) {
       this.values = values;
+      this.valid = valid;
     }
 
     public int[][] initialiseGrid(int rows, int columns) {
@@ -107,7 +113,7 @@ public class SudokuSolverTest {
     }
 
     public boolean isValid() {
-      throw new UnsupportedOperationException();
+      return valid;
     }
 
     public boolean isSolved() {
