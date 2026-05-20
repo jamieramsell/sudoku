@@ -95,7 +95,12 @@ public class SudokuGrid implements ISudokuGrid {
       }
     }
 
-    return grid.clone();
+    int[][] grid_copy = new int[grid.length][];
+    for (int row = 0; row < grid.length; row++) {
+      grid_copy[row] = grid[row].clone();
+    }
+
+    return grid_copy;
 
   }
 
