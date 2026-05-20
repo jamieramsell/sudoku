@@ -33,7 +33,7 @@ public class SudokuGrid implements ISudokuGrid {
     if (rows <= 0 || columns <= 0) {
       throw new IllegalArgumentException("Grid dimensions must be positive");
     } else if (rows > 3 || columns > 3) {
-      throw new IllegalArgumentException("Grids of more than 3 sudoku squares in either direction" +
+      throw new IllegalArgumentException("Grids of more than 3 sudoku squares in either direction " +
           "are not supported");
     }
 
