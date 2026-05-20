@@ -50,12 +50,12 @@ public class SudokuSolver implements ISudokuSolver {
       throw new IndexOutOfBoundsException("row or column out of bounds");
     }
 
-    // Check for duplicate values in the square
     return ISudokuSolver.isPlacementValid(grid.getGrid(), row, column, value);
 
   }
   
   private static void solve(int[][] workingGrid, Set<int[][]> solutions) {
+
     int[] emptyCell = findNextEmptyCell(workingGrid);
     if (emptyCell == null) {
       solutions.add(ISudokuGrid.copyGrid(workingGrid));
@@ -64,13 +64,15 @@ public class SudokuSolver implements ISudokuSolver {
 
     int row = emptyCell[0];
     int column = emptyCell[1];
-    for (int candidate = 1; candidate <= workingGrid.length; candidate++) {
+
+    for (int candidate = 1; candidate <= 9; candidate++) {
       if (ISudokuSolver.isPlacementValid(workingGrid, row, column, candidate)) {
         workingGrid[row][column] = candidate;
         solve(workingGrid, solutions);
         workingGrid[row][column] = -1;
       }
     }
+
   }
 
   private static int[] findNextEmptyCell(int[][] grid_to_check) {
@@ -84,7 +86,6 @@ public class SudokuSolver implements ISudokuSolver {
 
       }
     }
-
     return null;
   }
 
