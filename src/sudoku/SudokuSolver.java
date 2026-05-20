@@ -11,18 +11,22 @@ public class SudokuSolver implements ISudokuSolver {
     this.grid = grid;
   }
 
+  @Override
   public boolean isSolvable() {
     return countSolutions() > 0;
   }
 
+  @Override
   public boolean hasUniqueSolution() {
     return countSolutions() == 1;
   }
 
+  @Override
   public int countSolutions() {
     return solveGrid().size();
   }
 
+  @Override
   public Set<int[][]> solveGrid() {
     int[][] workingGrid = grid.getGrid();
     Set<int[][]> solutions = new HashSet<>();
@@ -35,6 +39,7 @@ public class SudokuSolver implements ISudokuSolver {
     return solutions;
   }
 
+  @Override
   public boolean isValidMove(int row, int column, int value) {
     
     // Input Validation //
@@ -54,16 +59,18 @@ public class SudokuSolver implements ISudokuSolver {
 
   }
   
+  // Convenience method to contain the exhaustive search which finds all solutions to a puzzle inclusive
+  // a given state.
   private static void solve(int[][] workingGrid, Set<int[][]> solutions) {
 
-    int[] emptyCell = findNextEmptyCell(workingGrid);
+    Tuple2<Integer, Integer> emptyCell = findNextEmptyCell(workingGrid);
     if (emptyCell == null) {
       solutions.add(ISudokuGrid.copyGrid(workingGrid));
       return;
     }
 
-    int row = emptyCell[0];
-    int column = emptyCell[1];
+    int row = emptyCell.first();
+    int column = emptyCell.second();
 
     for (int candidate = 1; candidate <= 9; candidate++) {
       if (ISudokuSolver.isPlacementValid(workingGrid, row, column, candidate)) {
@@ -75,13 +82,14 @@ public class SudokuSolver implements ISudokuSolver {
 
   }
 
-  private static int[] findNextEmptyCell(int[][] grid_to_check) {
+  // Convenience method to find & return the next empty cell
+  private static Tuple2<Integer, Integer> findNextEmptyCell(int[][] grid_to_check) {
 
     for (int row = 0; row < grid_to_check.length; row++) {
       for (int column = 0; column < grid_to_check[row].length; column++) {
 
         if (grid_to_check[row][column] == -1) {
-          return new int[] {row, column};
+          return new Tuple2<>(row, column);
         }
 
       }
