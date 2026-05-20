@@ -149,5 +149,10 @@ public class SudokuGrid implements ISudokuGrid {
 
     return rowOutput.toString();
   }
+  
+  @Override
+  public Tuple2<Integer, Integer> getGridSize() {
+    return new Tuple2<>(size * 3, size * 3);
+  }
 
 }
