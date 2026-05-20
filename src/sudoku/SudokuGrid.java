@@ -56,7 +56,7 @@ public class SudokuGrid implements ISudokuGrid {
   @Override
   public void setValue(int row, int column, int value) {
     if ((value < 1 || value > 9) && value != -1) {
-      throw new IllegalArgumentException("value must be either -1, or between 1 and 9" +
+      throw new IllegalArgumentException("value must be either -1, or between 1 and 9 " +
           "inclusive.");
     } else {
       grid[row][column] = value;
