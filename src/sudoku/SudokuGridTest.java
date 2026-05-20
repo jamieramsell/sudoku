@@ -66,6 +66,7 @@ public class SudokuGridTest {
 
   private static void shouldRejectInvalidValues() {
     ISudokuGrid grid = new SudokuGrid(1);
+    assertThrows(() -> grid.setValue(0, 0, -2), "negative value outside valid range");
     assertThrows(() -> grid.setValue(0, 0, 0), "value lower than valid range");
     assertThrows(() -> grid.setValue(0, 0, 10), "value higher than valid range");
   }
