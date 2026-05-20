@@ -1,6 +1,6 @@
 package sudoku;
 
-import java.util.List;
+import java.util.Set;
 
 public interface ISudokuSolver {
 
@@ -22,7 +22,7 @@ public interface ISudokuSolver {
    * Computes a set of solutions for the sudoku grid in its current state.
    * @return the (possibly empty) set of all possible solutions for the grid.
    */
-  public List<int[][]> solveGrid();
+  public Set<int[][]> solveGrid();
 
   /**
    * Checks whether setting a given cell to a certain value would follow the rules of Sudoku.

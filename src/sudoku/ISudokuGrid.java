@@ -67,4 +67,11 @@ public interface ISudokuGrid {
    */
   public Tuple2<Integer, Integer> getGridSize();
 
+  /**
+   * Returns a copy of the current state of the sudoku grid.
+   * @author Jamie
+   * @return the current state of the grid.
+   */
+  public int[][] getGrid();
+  
 }
