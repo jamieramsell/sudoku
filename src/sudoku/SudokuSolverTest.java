@@ -111,7 +111,7 @@ public class SudokuSolverTest {
       return values[row][column];
     }
 
-    public void setValue(int row, int column) {
+    public void setValue(int row, int column, int value) {
       throw new UnsupportedOperationException();
     }
 

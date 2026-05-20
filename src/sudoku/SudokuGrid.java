@@ -66,7 +66,7 @@ public class SudokuGrid implements ISudokuGrid {
   // To do
   @Override
   public boolean isValid() {
-    return false;
+    return ISudokuSolver.isGridStateValid(getGrid());
   }
 
   @Override
@@ -95,12 +95,7 @@ public class SudokuGrid implements ISudokuGrid {
       }
     }
 
-    int[][] grid_copy = new int[grid.length][];
-    for (int row = 0; row < grid.length; row++) {
-      grid_copy[row] = grid[row].clone();
-    }
-
-    return grid_copy;
+    return getGrid();
 
   }
 
@@ -153,6 +148,11 @@ public class SudokuGrid implements ISudokuGrid {
   @Override
   public Tuple2<Integer, Integer> getGridSize() {
     return new Tuple2<>(size * 3, size * 3);
+  }
+
+  @Override
+  public int[][] getGrid() {
+    return ISudokuGrid.copyGrid(grid);
   }
 
 }
