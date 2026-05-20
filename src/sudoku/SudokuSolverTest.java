@@ -1,6 +1,6 @@
 package sudoku;
 
-import java.util.List;
+import java.util.Set;
 
 public class SudokuSolverTest {
   public static void main(String[] args) {
@@ -25,11 +25,14 @@ public class SudokuSolverTest {
 
     SudokuSolver solver = new SudokuSolver(new MockSudokuGrid(puzzle, true));
     assertEquals(1, solver.countSolutions(), "Expected exactly one solution for known puzzle");
-    List<int[][]> solutions = solver.solveGrid();
+    Set<int[][]> solutions = solver.solveGrid();
     assertEquals(1, solutions.size(), "Expected one solution in the solution set");
-    int[][] solution = solutions.get(0);
-    assertEquals(5, solution[0][0], "Solution should preserve fixed values");
-    assertEquals(1, solution[8][6], "Solution should solve final row correctly");
+
+    for (int[][] solution : solutions) {
+      assertEquals(5, solution[0][0], "Solution should preserve fixed values");
+      assertEquals(1, solution[8][6], "Solution should solve final row correctly");
+    }
+    
   }
 
   private static void testSolveGridReturnsNoSolutionsForInvalidGrid() {
@@ -131,5 +134,10 @@ public class SudokuSolverTest {
     public Tuple2<Integer, Integer> getGridSize() {
       return new Tuple2<>(values.length / 3, values[0].length / 3);
     }
+
+    public int[][] getGrid() {
+      throw new UnsupportedOperationException();
+    }
+
   }
 }
