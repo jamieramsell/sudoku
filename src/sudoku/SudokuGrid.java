@@ -21,7 +21,7 @@ public class SudokuGrid implements ISudokuGrid {
    * store its solution
    */
 
-  // Convenience method two allow for two constructors with very similar funtionality
+  // Convenience method to allow for two constructors with very similar functionality
   private void initialiseAttributes(int size) {
     this.size = size;
     this.grid = initialiseGrid(size, size);
@@ -37,14 +37,15 @@ public class SudokuGrid implements ISudokuGrid {
           "are not supported");
     }
 
-    grid = new int[rows * 3][columns * 3];
-    for (int row = 0; row < grid.length; row++) {
-      for (int column = 0; column < grid[row].length; column++) {
-        grid[row][column] = -1;
+    int[][] new_grid = new int[rows * 3][columns * 3];
+    for (int row = 0; row < new_grid.length; row++) {
+      for (int column = 0; column < new_grid[row].length; column++) {
+        new_grid[row][column] = -1;
       }
     }
-
-    return grid;
+    
+    grid = new_grid.clone();
+    return new_grid;
   }
 
   @Override

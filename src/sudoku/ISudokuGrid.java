@@ -9,7 +9,7 @@ public interface ISudokuGrid {
    * @author Jamie
    * @param rows The number of rows of sudoku squares in the grid.
    * @param columns The number of columns of sudoku squares in the grid.
-   * @return The created sudoku grid.
+   * @return A copy of the created sudoku grid.
    */
   public int[][] initialiseGrid(int rows, int columns);
 
