@@ -89,8 +89,8 @@ public class SudokuGrid implements ISudokuGrid {
   @Override
   public int[][] resetGrid() {
 
-    for (int row = 0; row < size; row++) {
-      for (int col = 0; col < size; col++) {
+    for (int row = 0; row < size * 3; row++) {
+      for (int col = 0; col < size * 3; col++) {
         grid[row][col] = -1;
       }
     }
