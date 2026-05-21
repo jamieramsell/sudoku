@@ -1,5 +1,8 @@
 package sudoku;
 
+import java.util.Set;
+import java.util.HashSet;
+
 public class SudokuSolver implements ISudokuSolver {
 
   private final ISudokuGrid grid;
@@ -8,18 +11,35 @@ public class SudokuSolver implements ISudokuSolver {
     this.grid = grid;
   }
 
-  // To do
-  public boolean isSolvable() {return false;}
+  @Override
+  public boolean isSolvable() {
+    return countSolutions() > 0;
+  }
 
-  // To do
-  public boolean hasUniqueSolution() {return false;}
+  @Override
+  public boolean hasUniqueSolution() {
+    return countSolutions() == 1;
+  }
 
-  // To do
-  public int countSolutions() {return -1;}
+  @Override
+  public int countSolutions() {
+    return solveGrid().size();
+  }
 
-  // To do
-  public int[][] solveGrid() {return new int[][]{{-1}};}
+  @Override
+  public Set<int[][]> solveGrid() {
+    int[][] workingGrid = grid.getGrid();
+    Set<int[][]> solutions = new HashSet<>();
 
+    if (!grid.isValid() || !ISudokuSolver.isGridStateValid(workingGrid)) {
+      return solutions;
+    }
+
+    solve(workingGrid, solutions);
+    return solutions;
+  }
+
+  @Override
   public boolean isValidMove(int row, int column, int value) {
     
     // Input Validation //
@@ -31,49 +51,50 @@ public class SudokuSolver implements ISudokuSolver {
     }
 
     Tuple2<Integer, Integer> grid_size = grid.getGridSize();
-    if (row < 0 || row > grid_size.first() * 3 || column < 0 || column > grid_size.second() * 3) {
+    if (row < 0 || row >= grid_size.first() * 3 || column < 0 || column >= grid_size.second() * 3) {
       throw new IndexOutOfBoundsException("row or column out of bounds");
     }
 
-    // Check for duplicate values in the row
-    for (int current_col = 0; current_col < grid_size.second(); current_col++) {
-      if (grid.getValue(row, current_col) == value) {
-        return false;
-      }
+    return ISudokuSolver.isPlacementValid(grid.getGrid(), row, column, value);
+
+  }
+  
+  // Convenience method to contain the exhaustive search which finds all solutions to a puzzle inclusive
+  // a given state.
+  private static void solve(int[][] workingGrid, Set<int[][]> solutions) {
+
+    Tuple2<Integer, Integer> emptyCell = findNextEmptyCell(workingGrid);
+    if (emptyCell == null) {
+      solutions.add(ISudokuGrid.copyGrid(workingGrid));
+      return;
     }
 
-    // Check for duplicates in the column
-    for (int current_row = 0; current_row < grid_size.first(); current_row++) {
-      if (grid.getValue(current_row, column) == value) {
-        return false;
+    int row = emptyCell.first();
+    int column = emptyCell.second();
+
+    for (int candidate = 1; candidate <= 9; candidate++) {
+      if (ISudokuSolver.isPlacementValid(workingGrid, row, column, candidate)) {
+        workingGrid[row][column] = candidate;
+        solve(workingGrid, solutions);
+        workingGrid[row][column] = -1;
       }
     }
-
-    // Check for duplicate values in the square
-    return duplicatesInSquare(row, column, value);
 
   }
 
-  // Convenience method to check for duplicate values in the sudoku square of the given cell
-  private boolean duplicatesInSquare(int row, int column, int value) {
-    
-    // Find coordinates of top-left cell in the square
-    int top_left_row = row / 3;
-    int top_left_col = column / 3;
+  // Convenience method to find & return the next empty cell
+  private static Tuple2<Integer, Integer> findNextEmptyCell(int[][] grid_to_check) {
 
-    // Check whether each cell in the square is a duplicate
-    for (int current_row = top_left_row; current_row < top_left_row + 2; current_row++) {
-      for (int current_col = top_left_col; current_col < top_left_col + 2; current_col++) {
+    for (int row = 0; row < grid_to_check.length; row++) {
+      for (int column = 0; column < grid_to_check[row].length; column++) {
 
-        if (value == grid.getValue(current_row, current_col)) {
-          return false;
+        if (grid_to_check[row][column] == -1) {
+          return new Tuple2<>(row, column);
         }
 
       }
     }
-
-    return true;
-
+    return null;
   }
 
 }
