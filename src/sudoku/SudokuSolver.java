@@ -51,7 +51,7 @@ public class SudokuSolver implements ISudokuSolver {
     }
 
     Tuple2<Integer, Integer> grid_size = grid.getGridSize();
-    if (row < 0 || row > grid_size.first() * 3 || column < 0 || column > grid_size.second() * 3) {
+    if (row < 0 || row >= grid_size.first() * 3 || column < 0 || column >= grid_size.second() * 3) {
       throw new IndexOutOfBoundsException("row or column out of bounds");
     }
 

@@ -35,6 +35,8 @@ public class SudokuGrid implements ISudokuGrid {
     } else if (rows > 3 || columns > 3) {
       throw new IllegalArgumentException("Grids of more than 3 sudoku squares in either direction " +
           "are not supported");
+    } else if (rows != columns) {
+      throw new UnsupportedOperationException("Non-square grids are not yet supported");
     }
 
     int[][] new_grid = new int[rows * 3][columns * 3];
@@ -147,7 +149,7 @@ public class SudokuGrid implements ISudokuGrid {
   
   @Override
   public Tuple2<Integer, Integer> getGridSize() {
-    return new Tuple2<>(size * 3, size * 3);
+    return new Tuple2<>(size, size);
   }
 
   @Override
