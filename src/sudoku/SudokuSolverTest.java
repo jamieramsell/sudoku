@@ -127,9 +127,9 @@ public class SudokuSolverTest {
 
   private static int[][] deepCopy(int[][] source) {
     int[][] copy = new int[source.length][];
-    for (int row = 0; row < source.length; row++) {
-      copy[row] = new int[source[row].length];
-      System.arraycopy(source[row], 0, copy[row], 0, source[row].length);
+    for (int rowIndex = 0; rowIndex < source.length; rowIndex++) {
+      copy[rowIndex] = new int[source[rowIndex].length];
+      System.arraycopy(source[rowIndex], 0, copy[rowIndex], 0, source[rowIndex].length);
     }
     return copy;
   }
@@ -140,15 +140,16 @@ public class SudokuSolverTest {
           + actual.length + ".");
     }
 
-    for (int row = 0; row < expected.length; row++) {
-      if (expected[row].length != actual[row].length) {
-        throw new AssertionError(message + " Expected " + expected[row].length + " columns but found "
-            + actual[row].length + " on row " + row + ".");
+    for (int rowIndex = 0; rowIndex < expected.length; rowIndex++) {
+      if (expected[rowIndex].length != actual[rowIndex].length) {
+        throw new AssertionError(message + " Expected " + expected[rowIndex].length + " columns but found "
+            + actual[rowIndex].length + " on row " + rowIndex + ".");
       }
-      for (int column = 0; column < expected[row].length; column++) {
-        if (expected[row][column] != actual[row][column]) {
-          throw new AssertionError(message + " Mismatch at [" + row + "][" + column + "]: expected "
-              + expected[row][column] + " but found " + actual[row][column] + ".");
+      for (int columnIndex = 0; columnIndex < expected[rowIndex].length; columnIndex++) {
+        if (expected[rowIndex][columnIndex] != actual[rowIndex][columnIndex]) {
+          throw new AssertionError(message + " Mismatch at [" + rowIndex + "][" + columnIndex
+              + "]: expected " + expected[rowIndex][columnIndex] + " but found "
+              + actual[rowIndex][columnIndex] + ".");
         }
       }
     }

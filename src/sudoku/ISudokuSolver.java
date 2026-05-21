@@ -9,5 +9,5 @@ public interface ISudokuSolver {
    * @return A new solved 9x9 grid.
    * @throws IllegalArgumentException if the puzzle shape/content is invalid or no solution exists.
    */
-  public int[][] solve(int[][] puzzle);
+  int[][] solve(int[][] puzzle);
 }
