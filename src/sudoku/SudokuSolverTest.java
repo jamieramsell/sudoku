@@ -127,11 +127,9 @@ public class SudokuSolverTest {
 
   private static int[][] deepCopy(int[][] source) {
     int[][] copy = new int[source.length][];
-    for (int i = 0; i < source.length; i++) {
-      copy[i] = new int[source[i].length];
-      for (int j = 0; j < source[i].length; j++) {
-        copy[i][j] = source[i][j];
-      }
+    for (int row = 0; row < source.length; row++) {
+      copy[row] = new int[source[row].length];
+      System.arraycopy(source[row], 0, copy[row], 0, source[row].length);
     }
     return copy;
   }

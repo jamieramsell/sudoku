@@ -98,9 +98,7 @@ public class SudokuSolver implements ISudokuSolver {
   private int[][] copyGrid(int[][] source) {
     int[][] copy = new int[9][9];
     for (int row = 0; row < 9; row++) {
-      for (int column = 0; column < 9; column++) {
-        copy[row][column] = source[row][column];
-      }
+      System.arraycopy(source[row], 0, copy[row], 0, 9);
     }
     return copy;
   }
