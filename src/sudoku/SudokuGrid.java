@@ -28,13 +28,21 @@ public class SudokuGrid implements ISudokuGrid {
     this.solution = initialiseGrid(size, size);
   }
 
-  @Override
-  public int[][] initialiseGrid(int rows, int columns) {
+  /**
+   * Initialises an empty sudoku grid with the given size.
+   * <p>Each row/column will be formed of {@code rows} rows and {@code columns} columns of 3x3
+   * sudoku squares.
+   * @author Jamie
+   * @param rows The number of rows of sudoku squares in the grid.
+   * @param columns The number of columns of sudoku squares in the grid.
+   * @return The created empty grid.
+   */
+  int[][] initialiseGrid(int rows, int columns) {
     if (rows <= 0 || columns <= 0) {
       throw new IllegalArgumentException("Grid dimensions must be positive");
     } else if (rows > 3 || columns > 3) {
-      throw new IllegalArgumentException("Grids of more than 3 sudoku squares in either direction " +
-          "are not supported");
+      throw new IllegalArgumentException("Grids of more than 3 sudoku squares in either direction" +
+          " are not supported");
     } else if (rows != columns) {
       throw new UnsupportedOperationException("Non-square grids are not yet supported");
     }
@@ -46,7 +54,6 @@ public class SudokuGrid implements ISudokuGrid {
       }
     }
     
-    grid = new_grid.clone();
     return new_grid;
   }
 

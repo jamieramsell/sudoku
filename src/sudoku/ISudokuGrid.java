@@ -3,17 +3,6 @@ package sudoku;
 public interface ISudokuGrid {
 
   /**
-   * Initialises an empty sudoku grid with the given size.
-   * <p>Each row/column will be formed of {@code rows} rows and {@code columns} columns of 3x3
-   * sudoku squares.
-   * @author Jamie
-   * @param rows The number of rows of sudoku squares in the grid.
-   * @param columns The number of columns of sudoku squares in the grid.
-   * @return A copy of the created sudoku grid.
-   */
-  public int[][] initialiseGrid(int rows, int columns);
-
-  /**
    * Gets the current value of a cell in a sudoku grid.
    * <p>Coordinates are indexed from (0, 0), which is the upper left-most cell in the grid.
    * @author Jamie
