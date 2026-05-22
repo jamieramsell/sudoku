@@ -85,7 +85,7 @@ public class SudokuGenerator implements ISudokuGenerator{
    * @param upper_bound The upper bound of the number to generate. (non-inclusive)
    * @return A random number {@code lower_bound <= n < upper_bound}
    */
-  static private int randomInteger(int lower_bound, int upper_bound) {
+  private static int randomInteger(int lower_bound, int upper_bound) {
     int num_possibilities = upper_bound - lower_bound;
     return lower_bound + ((int) Math.random()) * (num_possibilities);
   }
