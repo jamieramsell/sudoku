@@ -28,6 +28,14 @@ public interface ISudokuSolver {
   public Set<int[][]> solveGrid();
 
   /**
+   * Computes a set of solutions for the sudoku grid in its current state.
+   * @author Jamie
+   * @param solutions_required The maximum number of solutions that should be generated.
+   * @return the (possibly empty) set of possible solutions for the grid.
+   */
+  public Set<int[][]> solveGrid(int solutions_required);
+
+  /**
    * Checks whether setting a given cell to a certain value would follow the rules of Sudoku.
    * <p>Coordinates are indexed from (0, 0), which is the upper left-most square in the grid.
    * @author Jamie

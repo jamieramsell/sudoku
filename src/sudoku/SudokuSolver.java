@@ -13,12 +13,12 @@ public class SudokuSolver implements ISudokuSolver {
 
   @Override
   public boolean isSolvable() {
-    return countSolutions() > 0;
+    return solveGrid(1).size() == 1;
   }
 
   @Override
   public boolean hasUniqueSolution() {
-    return countSolutions() == 1;
+    return solveGrid(2).size() == 1;
   }
 
   @Override
@@ -28,6 +28,17 @@ public class SudokuSolver implements ISudokuSolver {
 
   @Override
   public Set<int[][]> solveGrid() {
+    return solveGrid(-1);
+  }
+
+  @Override
+  public Set<int[][]> solveGrid(int solutions_required) {
+
+    if (solutions_required == 0 || solutions_required < -1) {
+      throw new IllegalArgumentException("solutions_required must be >= 1, or set to -1 to " +
+      "generate all possible solutions.");
+    }
+
     int[][] workingGrid = grid.getGrid();
     Set<int[][]> solutions = new HashSet<>();
 
@@ -35,7 +46,7 @@ public class SudokuSolver implements ISudokuSolver {
       return solutions;
     }
 
-    solve(workingGrid, solutions);
+    solve(workingGrid, solutions, solutions_required);
     return solutions;
   }
 
@@ -61,7 +72,11 @@ public class SudokuSolver implements ISudokuSolver {
   
   // Convenience method to contain the exhaustive search which finds all solutions to a puzzle in
   // a given state.
-  private static void solve(int[][] workingGrid, Set<int[][]> solutions) {
+  private static void solve(int[][] workingGrid, Set<int[][]> solutions, int solutions_required) {
+
+    if (solutions.size() == solutions_required) {
+      return;
+    }
 
     Tuple2<Integer, Integer> emptyCell = findNextEmptyCell(workingGrid);
     if (emptyCell == null) {
@@ -75,7 +90,7 @@ public class SudokuSolver implements ISudokuSolver {
     for (int candidate = 1; candidate <= 9; candidate++) {
       if (ISudokuSolver.isPlacementValid(workingGrid, row, column, candidate)) {
         workingGrid[row][column] = candidate;
-        solve(workingGrid, solutions);
+        solve(workingGrid, solutions, solutions_required);
         workingGrid[row][column] = -1;
       }
     }
