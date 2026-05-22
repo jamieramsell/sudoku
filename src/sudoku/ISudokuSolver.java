@@ -66,6 +66,9 @@ public interface ISudokuSolver {
     for (int current_row = top_left_row; current_row < top_left_row + 3; current_row++) {
       for (int current_col = top_left_col; current_col < top_left_col + 3; current_col++) {
 
+        if (current_row == row && current_col == column) {
+          continue; // Ignore the target cell's former value, which will be irrelevant once replaced
+        }
         if (value == grid_to_check[current_row][current_col]) {
           return false;
         }
@@ -96,9 +99,7 @@ public interface ISudokuSolver {
         }
 
         // Check that the value of the current cell is legal
-        grid_to_check[row][column] = -1;
         boolean valid = isPlacementValid(grid_to_check, row, column, value);
-        grid_to_check[row][column] = value;
 
         if (!valid) {
           return false;

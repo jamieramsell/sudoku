@@ -53,10 +53,10 @@ public interface ISudokuGrid {
   /**
    * Gets the size of the grid in terms of the number of sudoku squares it contains
    * @author Jamie
-   * @return a tuple of two integers, representing the number of rows, and the number of columns in
+   * @return a list of two integers, representing the number of rows, and the number of columns in
    * the grid respectively.
    */
-  public Tuple2<Integer, Integer> getGridSize();
+  public int[] getGridSize();
 
   /**
    * Returns a copy of the current state of the sudoku grid.

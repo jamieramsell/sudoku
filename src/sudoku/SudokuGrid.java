@@ -6,7 +6,6 @@ public class SudokuGrid implements ISudokuGrid {
 
   int size;
   int[][] grid;
-  int[][] solution;
 
   public SudokuGrid() {
     initialiseAttributes(DEFAULT_SIZE);
@@ -25,7 +24,6 @@ public class SudokuGrid implements ISudokuGrid {
   private void initialiseAttributes(int size) {
     this.size = size;
     this.grid = initialiseGrid(size, size);
-    this.solution = initialiseGrid(size, size);
   }
 
   /**
@@ -155,8 +153,8 @@ public class SudokuGrid implements ISudokuGrid {
   }
   
   @Override
-  public Tuple2<Integer, Integer> getGridSize() {
-    return new Tuple2<>(size, size);
+  public int[] getGridSize() {
+    return new int[]{size, size};
   }
 
   @Override

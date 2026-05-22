@@ -50,8 +50,8 @@ public class SudokuSolver implements ISudokuSolver {
       throw new IllegalArgumentException("value must be either -1, or between 1 and 9 inclusive.");
     }
 
-    Tuple2<Integer, Integer> grid_size = grid.getGridSize();
-    if (row < 0 || row >= grid_size.first() * 3 || column < 0 || column >= grid_size.second() * 3) {
+    int[] grid_size = grid.getGridSize();
+    if (row < 0 || row >= grid_size[0] * 3 || column < 0 || column >= grid_size[1] * 3) {
       throw new IndexOutOfBoundsException("row or column out of bounds");
     }
 
@@ -59,7 +59,7 @@ public class SudokuSolver implements ISudokuSolver {
 
   }
   
-  // Convenience method to contain the exhaustive search which finds all solutions to a puzzle inclusive
+  // Convenience method to contain the exhaustive search which finds all solutions to a puzzle in
   // a given state.
   private static void solve(int[][] workingGrid, Set<int[][]> solutions) {
 
