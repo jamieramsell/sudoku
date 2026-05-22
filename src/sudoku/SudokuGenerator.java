@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class SudokuGenerator implements ISudokuGenerator{
 
   private final PuzzleDifficulty difficulty;
+  private final PuzzleSymmetry symmetry;
   private ISudokuGrid grid;
   private final Tuple2<Integer, Integer> grid_size;
 
@@ -14,9 +15,11 @@ public class SudokuGenerator implements ISudokuGenerator{
    * 
    * @param difficulty The difficulty of the puzzle represents how many cells should already be
    * filled when starting the puzzle, or alternatively, how many cells the algorithm should remove.
+   * @param symmetry Represents the symmetry (if any) of the initial state of the puzzle.
    */
-  public SudokuGenerator(PuzzleDifficulty difficulty) {
+  public SudokuGenerator(PuzzleDifficulty difficulty, PuzzleSymmetry symmetry) {
     this.difficulty = difficulty;
+    this.symmetry = symmetry;
     this.grid = new SudokuGrid();
 
     int[] grid_dimensions = grid.getGridSize();
@@ -62,7 +65,7 @@ public class SudokuGenerator implements ISudokuGenerator{
         grid.setValue(row, col, solution[row][col]);
       }
     }
-    
+
   }
 
   /**

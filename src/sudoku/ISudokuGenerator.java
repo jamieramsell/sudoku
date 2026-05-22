@@ -4,7 +4,6 @@ public interface ISudokuGenerator {
 
   /**
    * Represents the difficulty level of the generated Sudoku puzzle.
-   * <p>Passed as a parameter to the method {@link generatePuzzle}.
    */
   public static enum PuzzleDifficulty {
 
@@ -34,6 +33,35 @@ public interface ISudokuGenerator {
      * <p>This option will result in anywhere between 10 and 64 cells being removed from the grid.
      */
     RANDOM
+
+  }
+
+  /**
+   * Represents the traditional symmetric pattern of the Sudoku puzzle to be generated.
+   * @see https://www.clarity-media.co.uk/viewblog.php?id=sudoku-and-symmetry
+   */
+  public static enum PuzzleSymmetry {
+    
+    /**
+     * Two-fold (180 degree) rotation: the grid looks the same if you turn it completely upside
+     * down.
+     */
+    ROTATIONAL,
+
+    /**
+     * The givens are mirrored vertically, creating identical left-to-right halves.
+     */
+    REFLECTIONAL,
+
+    /**
+     * The puzzle is to be symmetric both rotationally and reflectionally.
+     */
+    DIHEDRAL,
+
+    /**
+     * There is to be no enforced symmetry in the puzzle.
+     */
+    NONE
 
   }
 
