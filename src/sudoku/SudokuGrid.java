@@ -5,14 +5,14 @@ public class SudokuGrid implements ISudokuGrid {
   final int DEFAULT_SIZE = 3;
 
   int size;
-  int[][] grid;
+  IGridState grid;
 
   public SudokuGrid() {
     initialiseAttributes(DEFAULT_SIZE);
   }
 
   public SudokuGrid(int size) {
-    initialiseAttributes(size);
+    throw new UnsupportedOperationException();
   }
 
   /* To do - finish constructor
@@ -23,41 +23,12 @@ public class SudokuGrid implements ISudokuGrid {
   // Convenience method to allow for two constructors with very similar functionality
   private void initialiseAttributes(int size) {
     this.size = size;
-    this.grid = initialiseGrid(size, size);
-  }
-
-  /**
-   * Initialises an empty sudoku grid with the given size.
-   * <p>Each row/column will be formed of {@code rows} rows and {@code columns} columns of 3x3
-   * sudoku squares.
-   * @author Jamie
-   * @param rows The number of rows of sudoku squares in the grid.
-   * @param columns The number of columns of sudoku squares in the grid.
-   * @return The created empty grid.
-   */
-  int[][] initialiseGrid(int rows, int columns) {
-    if (rows <= 0 || columns <= 0) {
-      throw new IllegalArgumentException("Grid dimensions must be positive");
-    } else if (rows > 3 || columns > 3) {
-      throw new IllegalArgumentException("Grids of more than 3 sudoku squares in either direction" +
-          " are not supported");
-    } else if (rows != columns) {
-      throw new UnsupportedOperationException("Non-square grids are not yet supported");
-    }
-
-    int[][] new_grid = new int[rows * 3][columns * 3];
-    for (int row = 0; row < new_grid.length; row++) {
-      for (int column = 0; column < new_grid[row].length; column++) {
-        new_grid[row][column] = -1;
-      }
-    }
-    
-    return new_grid;
+    this.grid = new GridState();
   }
 
   @Override
   public int getValue(int row, int column) {
-    return grid[row][column];
+    return grid.getValue(row, column);
   }
 
   @Override
@@ -66,11 +37,10 @@ public class SudokuGrid implements ISudokuGrid {
       throw new IllegalArgumentException("value must be either -1, or between 1 and 9 " +
           "inclusive.");
     } else {
-      grid[row][column] = value;
+      grid.setValue(row, column, value);;
     }
   }
 
-  // To do
   @Override
   public boolean isValid() {
     return ISudokuSolver.isGridStateValid(getGrid());
@@ -83,9 +53,9 @@ public class SudokuGrid implements ISudokuGrid {
 
   // Convenience function for isSolved() method to check whether the grid has any empty cells
   private boolean hasEmptyCells() {
-    for (int[] row : grid) {
-      for (int cell : row) {
-        if (cell == -1) {
+    for (int row = 0; row < (size * size); row++) {
+      for (int col = 0; col < (size * size); col++) {
+        if (getValue(row, col) == -1) {
           return true;
         }
       }
@@ -94,11 +64,11 @@ public class SudokuGrid implements ISudokuGrid {
   }
 
   @Override
-  public int[][] resetGrid() {
+  public IGridState resetGrid() {
 
     for (int row = 0; row < size * 3; row++) {
       for (int col = 0; col < size * 3; col++) {
-        grid[row][col] = -1;
+        grid.setValue(row, col, -1);
       }
     }
 
@@ -118,7 +88,7 @@ public class SudokuGrid implements ISudokuGrid {
     StringBuilder output = new StringBuilder();
     String separator = "-".repeat(formatRow(0).length());
 
-    for (int row = 0; row < grid.length; row++) {
+    for (int row = 0; row < (size * size); row++) {
       if (row > 0) {
         output.append('\n');
       
@@ -137,7 +107,7 @@ public class SudokuGrid implements ISudokuGrid {
   private String formatRow(int row) {
     StringBuilder rowOutput = new StringBuilder();
 
-    for (int column = 0; column < grid[row].length; column++) {
+    for (int column = 0; column < (size * size); column++) {
       if (column > 0) {
         rowOutput.append(' ');
 
@@ -146,7 +116,7 @@ public class SudokuGrid implements ISudokuGrid {
         }
       }
 
-      rowOutput.append(grid[row][column]);
+      rowOutput.append(grid.getValue(row, column));
     }
 
     return rowOutput.toString();
@@ -158,8 +128,13 @@ public class SudokuGrid implements ISudokuGrid {
   }
 
   @Override
-  public int[][] getGrid() {
-    return ISudokuGrid.copyGrid(grid);
+  public IGridState getGrid() {
+    return grid.clone();
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    return grid.equals(other);
   }
 
 }

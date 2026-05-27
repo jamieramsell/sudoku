@@ -54,15 +54,15 @@ public class SudokuGenerator implements ISudokuGenerator{
 
     // Then compute a random solution
     ISudokuSolver solver = new SudokuSolver(grid);
-    List<int[][]> solutions = new ArrayList<>();
+    List<IGridState> solutions = new ArrayList<>();
     solutions.addAll(solver.solveGrid());
     int num_solutions = solutions.size();
-    int[][] solution = solutions.get(randomInteger(0, num_solutions));
+    IGridState solution = solutions.get(randomInteger(0, num_solutions));
 
     // Finally, update grid attribute with solved values of cells
     for (int row = 0; row < grid_size.first(); row++) {
       for (int col = 0; col < grid_size.second(); col++) {
-        grid.setValue(row, col, solution[row][col]);
+        grid.setValue(row, col, solution.getValue(row, col));
       }
     }
 

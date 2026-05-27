@@ -27,20 +27,20 @@ public class SudokuSolver implements ISudokuSolver {
   }
 
   @Override
-  public Set<int[][]> solveGrid() {
+  public Set<IGridState> solveGrid() {
     return solveGrid(-1);
   }
 
   @Override
-  public Set<int[][]> solveGrid(int solutions_required) {
+  public Set<IGridState> solveGrid(int solutions_required) {
 
     if (solutions_required == 0 || solutions_required < -1) {
       throw new IllegalArgumentException("solutions_required must be >= 1, or set to -1 to " +
       "generate all possible solutions.");
     }
 
-    int[][] workingGrid = grid.getGrid();
-    Set<int[][]> solutions = new HashSet<>();
+    IGridState workingGrid = grid.getGrid();
+    Set<IGridState> solutions = new HashSet<>();
 
     if (!grid.isValid() || !ISudokuSolver.isGridStateValid(workingGrid)) {
       return solutions;
@@ -52,7 +52,8 @@ public class SudokuSolver implements ISudokuSolver {
 
   // Convenience method to contain the exhaustive search which finds all solutions to a puzzle in
   // a given state.
-  private static void solve(int[][] workingGrid, Set<int[][]> solutions, int solutions_required) {
+  private static void solve(IGridState workingGrid, Set<IGridState> solutions,
+      int solutions_required) {
 
     if (solutions.size() == solutions_required) {
       return;
@@ -60,7 +61,7 @@ public class SudokuSolver implements ISudokuSolver {
 
     Tuple2<Integer, Integer> emptyCell = findNextEmptyCell(workingGrid);
     if (emptyCell == null) {
-      solutions.add(ISudokuGrid.copyGrid(workingGrid));
+      solutions.add(workingGrid.clone());
       return;
     }
 
@@ -69,21 +70,21 @@ public class SudokuSolver implements ISudokuSolver {
 
     for (int candidate = 1; candidate <= 9; candidate++) {
       if (ISudokuSolver.isPlacementValid(workingGrid, row, column, candidate)) {
-        workingGrid[row][column] = candidate;
+        workingGrid.setValue(row, column, candidate);
         solve(workingGrid, solutions, solutions_required);
-        workingGrid[row][column] = -1;
+        workingGrid.setValue(row, column, -1);
       }
     }
 
   }
 
   // Convenience method to find & return the next empty cell
-  private static Tuple2<Integer, Integer> findNextEmptyCell(int[][] grid_to_check) {
+  private static Tuple2<Integer, Integer> findNextEmptyCell(IGridState grid_to_check) {
 
-    for (int row = 0; row < grid_to_check.length; row++) {
-      for (int column = 0; column < grid_to_check[row].length; column++) {
+    for (int row = 0; row < grid_to_check.getCellSize(); row++) {
+      for (int column = 0; column < grid_to_check.getCellSize(); column++) {
 
-        if (grid_to_check[row][column] == -1) {
+        if (grid_to_check.getValue(row, column) == -1) {
           return new Tuple2<>(row, column);
         }
 

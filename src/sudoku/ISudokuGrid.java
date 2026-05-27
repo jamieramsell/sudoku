@@ -42,7 +42,7 @@ public interface ISudokuGrid {
    * @author Jamie
    * @return the emptied grid.
    */
-  public int[][] resetGrid();
+  public IGridState resetGrid();
 
   /**
    * Outputs the current state of the sudoku grid.
@@ -63,23 +63,6 @@ public interface ISudokuGrid {
    * @author Jamie
    * @return the current state of the grid.
    */
-  public int[][] getGrid();
-  
-  /**
-   * Creates a clone of the provided grid state.
-   * @author Jamie
-   * @param grid The state of the grid to clone.
-   * @return A deep copy of the grid provided.
-   */
-  public static int[][] copyGrid(int[][] grid) {
-
-    // Create a deep copy
-    int[][] grid_clone = grid.clone();
-    for (int i = 0; i < grid_clone.length; i++) {
-      grid_clone[i] = grid_clone[i].clone();
-    }
-    return grid_clone;
-
-  }
+  public IGridState getGrid();
 
 }
