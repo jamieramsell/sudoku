@@ -231,15 +231,15 @@ public class SudokuGenerator implements ISudokuGenerator{
         int sym_row = grid_cell_size - 1 - row;
         int sym_col = grid_cell_size - 1 - col;
         
-        // Add vertical reflection (horizontal axis symmetry)
+        // Add reflection across vertical axis (left-right mirror)
         if (sym_col != col) {
           cells.add(new Tuple2<>(row, sym_col));
         }
-        // Add horizontal reflection (vertical axis symmetry)
+        // Add reflection across horizontal axis (top-bottom mirror)
         if (sym_row != row) {
           cells.add(new Tuple2<>(sym_row, col));
         }
-        // Add 180-degree rotation (diagonal symmetry)
+        // Add 180-degree rotation (point symmetry around center)
         if ((sym_row != row || sym_col != col) && !hasDuplicate(cells, sym_row, sym_col)) {
           cells.add(new Tuple2<>(sym_row, sym_col));
         }
