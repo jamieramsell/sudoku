@@ -8,7 +8,8 @@ public class SudokuGenerator implements ISudokuGenerator{
   private final PuzzleDifficulty difficulty;
   private final PuzzleSymmetry symmetry;
   private ISudokuGrid grid;
-  private final Tuple2<Integer, Integer> grid_size;
+  private ISudokuGrid working_grid;
+  private final int grid_cell_size;
 
   /**
    * Initialises a {@code SudokuGenerator} with the given target difficulty.
@@ -21,9 +22,7 @@ public class SudokuGenerator implements ISudokuGenerator{
     this.difficulty = difficulty;
     this.symmetry = symmetry;
     this.grid = new SudokuGrid();
-
-    int[] grid_dimensions = grid.getGridSize();
-    this.grid_size = new Tuple2<>(grid_dimensions[0] * 3, grid_dimensions[1] * 3);
+    this.grid_cell_size = grid.getGrid().getCellSize();
   }
 
   @Override
@@ -48,8 +47,8 @@ public class SudokuGenerator implements ISudokuGenerator{
 
     // Firstly generate a random cell
     int random_value = randomInteger(1, 10);
-    int random_x = randomInteger(0, grid_size.first());
-    int random_y = randomInteger(0, grid_size.second());
+    int random_x = randomInteger(0, grid_cell_size);
+    int random_y = randomInteger(0, grid_cell_size);
     grid.setValue(random_x, random_y, random_value);
 
     // Then compute a random solution
@@ -60,8 +59,8 @@ public class SudokuGenerator implements ISudokuGenerator{
     IGridState solution = solutions.get(randomInteger(0, num_solutions));
 
     // Finally, update grid attribute with solved values of cells
-    for (int row = 0; row < grid_size.first(); row++) {
-      for (int col = 0; col < grid_size.second(); col++) {
+    for (int row = 0; row < grid_cell_size; row++) {
+      for (int col = 0; col < grid_cell_size; col++) {
         grid.setValue(row, col, solution.getValue(row, col));
       }
     }
@@ -76,7 +75,22 @@ public class SudokuGenerator implements ISudokuGenerator{
    * @return whether the target number of cells to remove could be reached.
    */
   private boolean removeCells() {
+
+    // Todo: complete implementation
+    
+    Tuple2<Integer, Integer> target_cells = difficulty.getCellsToRemove();
+
+    switch (symmetry) {
+      case PuzzleSymmetry.ROTATIONAL -> {break;}
+      case PuzzleSymmetry.REFLECTIONAL -> {break;}
+      case PuzzleSymmetry.DIHEDRAL -> {break;}
+      case PuzzleSymmetry.NONE -> {break;}
+    }
+    
+    Tuple2<Integer, Integer> cell_to_remove = null;
+
     throw new UnsupportedOperationException();
+
   }
 
   /**
@@ -89,6 +103,5 @@ public class SudokuGenerator implements ISudokuGenerator{
     int num_possibilities = upper_bound - lower_bound;
     return lower_bound + ((int) Math.random()) * (num_possibilities);
   }
-
 
 }
