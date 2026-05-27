@@ -150,7 +150,9 @@ public class SudokuGenerator implements ISudokuGenerator{
     
     int cells_removed = 0;
     boolean[][] removed_cells = new boolean[grid_cell_size][grid_cell_size];
-    int max_removal_attempts = grid_cell_size * grid_cell_size * 3; // Prevent infinite loops
+    // Limit removal attempts to prevent infinite loops: multiply total cells by 3
+    // to account for cells already removed and symmetry constraints
+    int max_removal_attempts = grid_cell_size * grid_cell_size * 3;
     int attempts = 0;
     
     while (cells_removed < target_to_remove && attempts < max_removal_attempts) {
