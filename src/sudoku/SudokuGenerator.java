@@ -30,6 +30,8 @@ public class SudokuGenerator implements ISudokuGenerator{
     
     // Try to generate a random puzzle until one has been found which can have the required number
     // of target cells removed.
+    // Note: Currently, the hasUniqueSolution parameter is not enforced. Future implementations
+    // may add validation to ensure unique solutions when this parameter is true.
     do {
       generateFullGrid();
     } while (!removeCells());
