@@ -91,7 +91,7 @@ class GridState implements IGridState {
     // Create a deep copy
     GridState grid_clone = new GridState();
     for (int i = 0; i < size * size; i++) {
-      grid_clone.grid[i] = grid_clone.grid[i].clone();
+      grid_clone.grid[i] = this.grid[i].clone();
     }
     return grid_clone;
 

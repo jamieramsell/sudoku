@@ -62,8 +62,10 @@ public interface ISudokuSolver {
 
     // Can use a single for loop here as a grid is always square
     for (int index = 0; index < (grid_to_check.getCellSize()); index++) {
-      if (grid_to_check.getValue(row, index) == value
-          || grid_to_check.getValue(index, column) == value) {
+      if (index != column && grid_to_check.getValue(row, index) == value) {
+        return false;
+      }
+      if (index != row && grid_to_check.getValue(index, column) == value) {
         return false;
       }
     }

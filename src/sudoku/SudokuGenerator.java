@@ -44,27 +44,92 @@ public class SudokuGenerator implements ISudokuGenerator{
    * @param hasUniqueSolution Whether or not the generated puzzle should only have one solution.
    */
   private void generateFullGrid() {
-
-    // Firstly generate a random cell
-    int random_value = randomInteger(1, 10);
-    int random_x = randomInteger(0, grid_cell_size);
-    int random_y = randomInteger(0, grid_cell_size);
-    grid.setValue(random_x, random_y, random_value);
-
-    // Then compute a random solution
-    ISudokuSolver solver = new SudokuSolver(grid);
-    List<IGridState> solutions = new ArrayList<>();
-    solutions.addAll(solver.solveGrid());
-    int num_solutions = solutions.size();
-    IGridState solution = solutions.get(randomInteger(0, num_solutions));
-
-    // Finally, update grid attribute with solved values of cells
+    // Reset the grid to empty state
+    grid.resetGrid();
+    
+    // Fill the grid using backtracking
+    fillGridBacktracking();
+  }
+  
+  /**
+   * Fills the grid using a backtracking algorithm with randomization.
+   * @return true if the grid was successfully filled, false otherwise
+   */
+  private boolean fillGridBacktracking() {
+    // Find the first empty cell
     for (int row = 0; row < grid_cell_size; row++) {
       for (int col = 0; col < grid_cell_size; col++) {
-        grid.setValue(row, col, solution.getValue(row, col));
+        if (grid.getValue(row, col) == -1) {
+          // Try values in random order
+          int[] values = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+          shuffleArray(values);
+          
+          for (int value : values) {
+            if (isValidPlacement(row, col, value)) {
+              grid.setValue(row, col, value);
+              
+              if (fillGridBacktracking()) {
+                return true;
+              }
+              
+              // Backtrack
+              grid.setValue(row, col, -1);
+            }
+          }
+          return false;
+        }
       }
     }
-
+    return true; // Grid is full
+  }
+  
+  /**
+   * Checks if a value can be placed at the given position.
+   * @param row The row index
+   * @param col The column index
+   * @param value The value to check
+   * @return true if the placement is valid, false otherwise
+   */
+  private boolean isValidPlacement(int row, int col, int value) {
+    // Check row
+    for (int i = 0; i < grid_cell_size; i++) {
+      if (i != col && grid.getValue(row, i) == value) {
+        return false;
+      }
+    }
+    
+    // Check column
+    for (int i = 0; i < grid_cell_size; i++) {
+      if (i != row && grid.getValue(i, col) == value) {
+        return false;
+      }
+    }
+    
+    // Check 3x3 box
+    int box_row = row - row % 3;
+    int box_col = col - col % 3;
+    for (int i = box_row; i < box_row + 3; i++) {
+      for (int j = box_col; j < box_col + 3; j++) {
+        if ((i != row || j != col) && grid.getValue(i, j) == value) {
+          return false;
+        }
+      }
+    }
+    
+    return true;
+  }
+  
+  /**
+   * Shuffles an array in place using Fisher-Yates shuffle.
+   * @param array The array to shuffle
+   */
+  private void shuffleArray(int[] array) {
+    for (int i = array.length - 1; i > 0; i--) {
+      int j = randomInteger(0, i + 1);
+      int temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+    }
   }
 
   /**
@@ -75,22 +140,124 @@ public class SudokuGenerator implements ISudokuGenerator{
    * @return whether the target number of cells to remove could be reached.
    */
   private boolean removeCells() {
-
-    // Todo: complete implementation
     
     Tuple2<Integer, Integer> target_cells = difficulty.getCellsToRemove();
-
-    switch (symmetry) {
-      case PuzzleSymmetry.ROTATIONAL -> {break;}
-      case PuzzleSymmetry.REFLECTIONAL -> {break;}
-      case PuzzleSymmetry.DIHEDRAL -> {break;}
-      case PuzzleSymmetry.NONE -> {break;}
+    int min_cells = target_cells.first();
+    int max_cells = target_cells.second();
+    int target_to_remove = randomInteger(min_cells, max_cells + 1);
+    
+    int cells_removed = 0;
+    List<Tuple2<Integer, Integer>> removed_cells = new ArrayList<>();
+    
+    while (cells_removed < target_to_remove) {
+      int row = randomInteger(0, grid_cell_size);
+      int col = randomInteger(0, grid_cell_size);
+      
+      // Skip if cell is already empty
+      if (grid.getValue(row, col) == -1) {
+        continue;
+      }
+      
+      // Skip if cell has already been removed
+      if (isCellRemoved(removed_cells, row, col)) {
+        continue;
+      }
+      
+      // Calculate symmetric cells based on symmetry type
+      List<Tuple2<Integer, Integer>> cells_to_remove = getSymmetricCells(row, col);
+      
+      // Check if all symmetric cells can be removed
+      boolean can_remove_all = true;
+      for (Tuple2<Integer, Integer> cell : cells_to_remove) {
+        int r = cell.first();
+        int c = cell.second();
+        if (grid.getValue(r, c) == -1 || isCellRemoved(removed_cells, r, c)) {
+          can_remove_all = false;
+          break;
+        }
+      }
+      
+      if (!can_remove_all) {
+        continue;
+      }
+      
+      // Remove the cells
+      for (Tuple2<Integer, Integer> cell : cells_to_remove) {
+        int r = cell.first();
+        int c = cell.second();
+        grid.setValue(r, c, -1);
+        removed_cells.add(cell);
+        cells_removed++;
+      }
     }
     
-    Tuple2<Integer, Integer> cell_to_remove = null;
-
-    throw new UnsupportedOperationException();
-
+    return cells_removed >= min_cells;
+  }
+  
+  /**
+   * Gets the list of cells that should be removed based on the symmetry pattern.
+   * @param row The row of the primary cell
+   * @param col The column of the primary cell
+   * @return A list of cells to remove
+   */
+  private List<Tuple2<Integer, Integer>> getSymmetricCells(int row, int col) {
+    List<Tuple2<Integer, Integer>> cells = new ArrayList<>();
+    cells.add(new Tuple2<>(row, col));
+    
+    switch (symmetry) {
+      case ROTATIONAL -> {
+        // 180-degree rotational symmetry
+        int sym_row = grid_cell_size - 1 - row;
+        int sym_col = grid_cell_size - 1 - col;
+        if (!(sym_row == row && sym_col == col)) {
+          cells.add(new Tuple2<>(sym_row, sym_col));
+        }
+      }
+      case REFLECTIONAL -> {
+        // Vertical mirror symmetry
+        int sym_col = grid_cell_size - 1 - col;
+        if (sym_col != col) {
+          cells.add(new Tuple2<>(row, sym_col));
+        }
+      }
+      case DIHEDRAL -> {
+        // Both rotational and reflectional symmetry
+        int sym_row = grid_cell_size - 1 - row;
+        int sym_col = grid_cell_size - 1 - col;
+        
+        // Add all symmetries
+        if (sym_row != row || sym_col != col) {
+          cells.add(new Tuple2<>(sym_row, sym_col)); // rotational
+        }
+        if (sym_col != col) {
+          cells.add(new Tuple2<>(row, sym_col)); // reflectional
+        }
+        if (sym_row != row) {
+          cells.add(new Tuple2<>(sym_row, col)); // rotational + reflectional
+        }
+      }
+      case NONE -> {
+        // No symmetry, just remove the single cell
+      }
+    }
+    
+    return cells;
+  }
+  
+  /**
+   * Checks if a cell has already been removed.
+   * @param removed_cells The list of removed cells
+   * @param row The row to check
+   * @param col The column to check
+   * @return true if the cell has been removed, false otherwise
+   */
+  private boolean isCellRemoved(List<Tuple2<Integer, Integer>> removed_cells, int row, int col) {
+    for (Tuple2<Integer, Integer> cell : removed_cells) {
+      if (cell.first() == row && cell.second() == col) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -101,7 +268,7 @@ public class SudokuGenerator implements ISudokuGenerator{
    */
   private static int randomInteger(int lower_bound, int upper_bound) {
     int num_possibilities = upper_bound - lower_bound;
-    return lower_bound + ((int) Math.random()) * (num_possibilities);
+    return lower_bound + (int) (Math.random() * num_possibilities);
   }
 
 }
