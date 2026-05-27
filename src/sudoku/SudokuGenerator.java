@@ -147,9 +147,13 @@ public class SudokuGenerator implements ISudokuGenerator{
     int target_to_remove = randomInteger(min_cells, max_cells + 1);
     
     int cells_removed = 0;
-    List<Tuple2<Integer, Integer>> removed_cells = new ArrayList<>();
+    boolean[][] removed_cells = new boolean[grid_cell_size][grid_cell_size];
+    int max_attempts = grid_cell_size * grid_cell_size * 3; // Prevent infinite loops
+    int attempts = 0;
     
-    while (cells_removed < target_to_remove) {
+    while (cells_removed < target_to_remove && attempts < max_attempts) {
+      attempts++;
+      
       int row = randomInteger(0, grid_cell_size);
       int col = randomInteger(0, grid_cell_size);
       
@@ -159,7 +163,7 @@ public class SudokuGenerator implements ISudokuGenerator{
       }
       
       // Skip if cell has already been removed
-      if (isCellRemoved(removed_cells, row, col)) {
+      if (removed_cells[row][col]) {
         continue;
       }
       
@@ -171,7 +175,7 @@ public class SudokuGenerator implements ISudokuGenerator{
       for (Tuple2<Integer, Integer> cell : cells_to_remove) {
         int r = cell.first();
         int c = cell.second();
-        if (grid.getValue(r, c) == -1 || isCellRemoved(removed_cells, r, c)) {
+        if (grid.getValue(r, c) == -1 || removed_cells[r][c]) {
           can_remove_all = false;
           break;
         }
@@ -186,7 +190,7 @@ public class SudokuGenerator implements ISudokuGenerator{
         int r = cell.first();
         int c = cell.second();
         grid.setValue(r, c, -1);
-        removed_cells.add(cell);
+        removed_cells[r][c] = true;
         cells_removed++;
       }
     }
@@ -209,7 +213,7 @@ public class SudokuGenerator implements ISudokuGenerator{
         // 180-degree rotational symmetry
         int sym_row = grid_cell_size - 1 - row;
         int sym_col = grid_cell_size - 1 - col;
-        if (!(sym_row == row && sym_col == col)) {
+        if (sym_row != row || sym_col != col) {
           cells.add(new Tuple2<>(sym_row, sym_col));
         }
       }
@@ -244,22 +248,6 @@ public class SudokuGenerator implements ISudokuGenerator{
     return cells;
   }
   
-  /**
-   * Checks if a cell has already been removed.
-   * @param removed_cells The list of removed cells
-   * @param row The row to check
-   * @param col The column to check
-   * @return true if the cell has been removed, false otherwise
-   */
-  private boolean isCellRemoved(List<Tuple2<Integer, Integer>> removed_cells, int row, int col) {
-    for (Tuple2<Integer, Integer> cell : removed_cells) {
-      if (cell.first() == row && cell.second() == col) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   /**
    * Convenience function to generate a random integer between the two values provided.
    * @param lower_bound The inclusive lower bound of the number to generate.
