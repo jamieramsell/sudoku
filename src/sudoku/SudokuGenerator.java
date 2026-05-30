@@ -72,11 +72,11 @@ public class SudokuGenerator implements ISudokuGenerator{
             assert grid.getValue(row, col) == -1 : String.format("Cell at (%d,%d) must be empty", row, col);
             if (solver.isValidMove(row, col, value)) {
               grid.setValue(row, col, value);
-               
+
               if (fillGridBacktracking()) {
                 return true;
               }
-               
+
               // Backtrack
               grid.setValue(row, col, -1);
             }
