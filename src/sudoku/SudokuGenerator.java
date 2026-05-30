@@ -68,7 +68,7 @@ public class SudokuGenerator implements ISudokuGenerator{
           shuffleArray(values);
           
           for (int value : values) {
-            if (isValidPlacement(row, col, value)) {
+            if (solver.isValidMove(row, col, value)) {
               grid.setValue(row, col, value);
               
               if (fillGridBacktracking()) {
@@ -84,23 +84,6 @@ public class SudokuGenerator implements ISudokuGenerator{
       }
     }
     return true; // Grid is full
-  }
-  
-  /**
-   * Checks if a value can be placed at the given position.
-   * <p>This method is called during grid generation when the target cell is empty (-1).
-   * The solver's isValidMove() validates placements by checking if the value
-   * exists elsewhere in the row, column, or 3x3 box, regardless of the target cell's current value.
-   * <p>Precondition: The cell at (row, col) must be empty (-1) when this method is called.
-   * @param row The row index
-   * @param col The column index  
-   * @param value The value to check (must be 1-9)
-   * @return true if the placement is valid, false otherwise
-   */
-  private boolean isValidPlacement(int row, int col, int value) {
-    // Precondition: cell must be empty during grid generation
-    assert grid.getValue(row, col) == -1 : String.format("Cell at (%d,%d) must be empty", row, col);
-    return solver.isValidMove(row, col, value);
   }
   
   /**
