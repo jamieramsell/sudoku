@@ -10,6 +10,7 @@ public class SudokuGenerator implements ISudokuGenerator{
   private ISudokuGrid grid;
   private ISudokuGrid working_grid;
   private final int grid_cell_size;
+  private ISudokuSolver solver;
 
   /**
    * Initialises a {@code SudokuGenerator} with the given target difficulty.
@@ -23,6 +24,7 @@ public class SudokuGenerator implements ISudokuGenerator{
     this.symmetry = symmetry;
     this.grid = new SudokuGrid();
     this.grid_cell_size = grid.getGrid().getCellSize();
+    this.solver = new SudokuSolver(grid);
   }
 
   @Override
@@ -30,11 +32,9 @@ public class SudokuGenerator implements ISudokuGenerator{
     
     // Try to generate a random puzzle until one has been found which can have the required number
     // of target cells removed.
-    // Note: Currently, the hasUniqueSolution parameter is not enforced. Future implementations
-    // may add validation to ensure unique solutions when this parameter is true.
     do {
       generateFullGrid();
-    } while (!removeCells());
+    } while (!removeCells(hasUniqueSolution));
 
     return grid;
 
@@ -93,32 +93,7 @@ public class SudokuGenerator implements ISudokuGenerator{
    * @return true if the placement is valid, false otherwise
    */
   private boolean isValidPlacement(int row, int col, int value) {
-    // Check row
-    for (int i = 0; i < grid_cell_size; i++) {
-      if (i != col && grid.getValue(row, i) == value) {
-        return false;
-      }
-    }
-    
-    // Check column
-    for (int i = 0; i < grid_cell_size; i++) {
-      if (i != row && grid.getValue(i, col) == value) {
-        return false;
-      }
-    }
-    
-    // Check 3x3 box
-    int box_row = row - row % 3;
-    int box_col = col - col % 3;
-    for (int i = box_row; i < box_row + 3; i++) {
-      for (int j = box_col; j < box_col + 3; j++) {
-        if ((i != row || j != col) && grid.getValue(i, j) == value) {
-          return false;
-        }
-      }
-    }
-    
-    return true;
+    return solver.isValidMove(row, col, value);
   }
   
   /**
@@ -139,9 +114,10 @@ public class SudokuGenerator implements ISudokuGenerator{
    * <p>The number of cells to remove is determined by the difficulty of the
    * {@code SudokuGenerator}, which was assigned upon instantiation.
    * <p>This method acts directly upon {@code grid}, rather than returning an updated version.
-   * @return whether the target number of cells to remove could be reached.
+   * @param hasUniqueSolution Whether the resulting puzzle must have a unique solution
+   * @return whether the target number of cells to remove could be reached and constraints satisfied.
    */
-  private boolean removeCells() {
+  private boolean removeCells(boolean hasUniqueSolution) {
     
     Tuple2<Integer, Integer> target_cells = difficulty.getCellsToRemove();
     int min_cells = target_cells.first();
@@ -199,7 +175,21 @@ public class SudokuGenerator implements ISudokuGenerator{
       }
     }
     
-    return cells_removed >= min_cells;
+    // Check if minimum cells were removed
+    if (cells_removed < min_cells) {
+      return false;
+    }
+    
+    // If unique solution is required, verify it
+    if (hasUniqueSolution) {
+      int solution_count = solver.countSolutions();
+      if (solution_count != 1) {
+        // Puzzle has multiple or no solutions, reject and try again
+        return false;
+      }
+    }
+    
+    return true;
   }
   
   /**
