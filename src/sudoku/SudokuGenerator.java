@@ -2,6 +2,7 @@ package sudoku;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
 
 public class SudokuGenerator implements ISudokuGenerator{
 
@@ -122,8 +123,10 @@ public class SudokuGenerator implements ISudokuGenerator{
    */
   private boolean removeCells(boolean hasUniqueSolution) {
     
-    // Reinitialize solver with the current grid state to ensure it reflects recent changes
-    this.solver = new SudokuSolver(grid);
+    // Reinitialize solver with the current grid state only if we need to check for unique solutions
+    if (hasUniqueSolution) {
+      this.solver = new SudokuSolver(grid);
+    }
     Tuple2<Integer, Integer> target_cells = difficulty.getCellsToRemove();
     int min_cells = target_cells.first();
     int max_cells = target_cells.second();
@@ -187,8 +190,9 @@ public class SudokuGenerator implements ISudokuGenerator{
     
     // If unique solution is required, verify it
     if (hasUniqueSolution) {
-      int solution_count = solver.countSolutions();
-      if (solution_count != 1) {
+      // Only need to find at most 2 solutions: if exactly 1, it's unique; if 2+, it's not unique
+      Set<IGridState> solutions = solver.solveGrid(2);
+      if (solutions.size() != 1) {
         // Puzzle has multiple or no solutions, reject and try again
         return false;
       }
