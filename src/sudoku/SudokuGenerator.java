@@ -99,7 +99,7 @@ public class SudokuGenerator implements ISudokuGenerator{
    */
   private boolean isValidPlacement(int row, int col, int value) {
     // Precondition: cell must be empty during grid generation
-    assert grid.getValue(row, col) == -1 : "Cell at (" + row + "," + col + ") must be empty";
+    assert grid.getValue(row, col) == -1 : String.format("Cell at (%d,%d) must be empty", row, col);
     return solver.isValidMove(row, col, value);
   }
   
