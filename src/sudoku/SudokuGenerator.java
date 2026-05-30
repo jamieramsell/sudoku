@@ -159,6 +159,11 @@ public class SudokuGenerator implements ISudokuGenerator{
         continue;
       }
       
+      // Skip if this symmetric group would exceed maximum removals for the selected difficulty
+      if (cells_removed + cells_to_remove.size() > max_cells) {
+        continue;
+      }
+
       // Remove the cells
       for (Tuple2<Integer, Integer> cell : cells_to_remove) {
         int r = cell.first();
