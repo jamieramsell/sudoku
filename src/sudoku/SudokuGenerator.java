@@ -87,6 +87,9 @@ public class SudokuGenerator implements ISudokuGenerator{
   
   /**
    * Checks if a value can be placed at the given position.
+   * <p>This method is called during grid generation when the target cell is empty (-1).
+   * The solver's isValidMove() validates placements by checking if the value
+   * exists elsewhere in the row, column, or 3x3 box.
    * @param row The row index
    * @param col The column index
    * @param value The value to check
@@ -119,6 +122,8 @@ public class SudokuGenerator implements ISudokuGenerator{
    */
   private boolean removeCells(boolean hasUniqueSolution) {
     
+    // Reinitialize solver with the current grid state to ensure it reflects recent changes
+    this.solver = new SudokuSolver(grid);
     Tuple2<Integer, Integer> target_cells = difficulty.getCellsToRemove();
     int min_cells = target_cells.first();
     int max_cells = target_cells.second();
