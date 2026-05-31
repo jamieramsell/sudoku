@@ -115,8 +115,12 @@ public class SudokuGrid implements ISudokuGrid {
           rowOutput.append("| ");
         }
       }
-
-      rowOutput.append(grid.getValue(row, column));
+      int value = grid.getValue(row, column);
+      if (value == -1) {
+        rowOutput.append('X');
+      } else {
+        rowOutput.append(value);
+      }
     }
 
     return rowOutput.toString();
