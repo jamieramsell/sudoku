@@ -9,7 +9,6 @@ public class SudokuGenerator implements ISudokuGenerator{
   private final PuzzleDifficulty difficulty;
   private final PuzzleSymmetry symmetry;
   private ISudokuGrid grid;
-  private ISudokuGrid working_grid;
   private final int grid_cell_size;
   private ISudokuSolver solver;
 

@@ -79,7 +79,10 @@ class GridState implements IGridState {
     int hash = 17;
     for (int[] row : grid) {
       for (int col : row) {
-        hash *= col;
+        if (col == -1) {
+          col = 0;
+        }
+        hash = 31 * hash + col;
       }
     }
     return hash;

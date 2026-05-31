@@ -138,7 +138,11 @@ public class SudokuGrid implements ISudokuGrid {
 
   @Override
   public boolean equals(Object other) {
-    return grid.equals(other);
+    if (!(other instanceof SudokuGrid)) {
+      return false;
+    }
+    SudokuGrid casted_other = (SudokuGrid) other;
+    return grid.equals(casted_other.getGrid());
   }
 
 }
