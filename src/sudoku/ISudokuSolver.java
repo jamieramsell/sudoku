@@ -25,7 +25,15 @@ public interface ISudokuSolver {
    * @author Jamie
    * @return the (possibly empty) set of all possible solutions for the grid.
    */
-  public Set<int[][]> solveGrid();
+  public Set<IGridState> solveGrid();
+
+  /**
+   * Computes a set of solutions for the sudoku grid in its current state.
+   * @author Jamie
+   * @param solutions_required The maximum number of solutions that should be generated.
+   * @return the (possibly empty) set of possible solutions for the grid.
+   */
+  public Set<IGridState> solveGrid(int solutions_required);
 
   /**
    * Checks whether setting a given cell to a certain value would follow the rules of Sudoku.
@@ -50,16 +58,19 @@ public interface ISudokuSolver {
    * @return Whether {@code value} can be inserted into {@code grid_to_check} at
    * {@code (row, column)}.
    */
-  static boolean isPlacementValid(int[][] grid_to_check, int row, int column, int value) {
+  static boolean isPlacementValid(IGridState grid_to_check, int row, int column, int value) {
 
     // Can use a single for loop here as a grid is always square
-    for (int index = 0; index < grid_to_check.length; index++) {
-      if (grid_to_check[row][index] == value || grid_to_check[index][column] == value) {
+    for (int index = 0; index < (grid_to_check.getCellSize()); index++) {
+      if (index != column && grid_to_check.getValue(row, index) == value) {
+        return false;
+      }
+      if (index != row && grid_to_check.getValue(index, column) == value) {
         return false;
       }
     }
 
-    // Check if each cell in the square is a duplicate
+    // Check if any cell in the square is a duplicate
     int top_left_row = row - row % 3;
     int top_left_col = column - column % 3;
 
@@ -69,7 +80,7 @@ public interface ISudokuSolver {
         if (current_row == row && current_col == column) {
           continue; // Ignore the target cell's former value, which will be irrelevant once replaced
         }
-        if (value == grid_to_check[current_row][current_col]) {
+        if (value == grid_to_check.getValue(current_row, current_col)) {
           return false;
         }
 
@@ -82,15 +93,15 @@ public interface ISudokuSolver {
   /**
    * Checks to ensure the state of the grid provided is legal in terms of the Sudoku game rules.
    * @author Jamie
-   * @param grid_to_check The state of the grid to check.
+   * @param grid_to_check The grid state to check.
    * @return Whether the grid state is valid.
    */
-  public static boolean isGridStateValid(int[][] grid_to_check) {
+  public static boolean isGridStateValid(IGridState grid_to_check) {
 
-    for (int row = 0; row < grid_to_check.length; row++) {
-      for (int column = 0; column < grid_to_check[row].length; column++) {
+    for (int row = 0; row < grid_to_check.getCellSize(); row++) {
+      for (int column = 0; column < grid_to_check.getCellSize(); column++) {
 
-        int value = grid_to_check[row][column];
+        int value = grid_to_check.getValue(row, column);
 
         if (value == -1) { // Cells are always allowed to be empty
           continue;
