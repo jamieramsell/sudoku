@@ -82,7 +82,8 @@ public interface ISudokuGenerator {
    * much less challenging.
    * @return an {@link ISudokuGrid} representing the initial state of the puzzle.
    * 
-   * @see {@link} PuzzleDifficulty
+   * @see PuzzleDifficulty
+   * @see PuzzleSymmetry
    */
   public ISudokuGrid generatePuzzle(boolean hasUniqueSolution);
 
