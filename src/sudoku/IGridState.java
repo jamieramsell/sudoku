@@ -1,6 +1,6 @@
 package sudoku;
 
-interface IGridState extends Cloneable {
+public interface IGridState extends Cloneable {
 
   /**
    * Gets the current value of a cell in a sudoku grid.
