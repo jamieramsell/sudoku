@@ -2,7 +2,6 @@ package sudoku;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Set;
 
 public class SudokuGenerator implements ISudokuGenerator{
 
@@ -117,25 +116,21 @@ public class SudokuGenerator implements ISudokuGenerator{
     int target_to_remove = randomInteger(min_cells, max_cells + 1);
     
     int cells_removed = 0;
-    boolean[][] removed_cells = new boolean[grid_cell_size][grid_cell_size];
-    // Limit removal attempts to prevent infinite loops: multiply total cells by 3
-    // to account for cells already removed and symmetry constraints
-    int max_removal_attempts = grid_cell_size * grid_cell_size * 3;
-    int attempts = 0;
-    
-    while (cells_removed < target_to_remove && attempts < max_removal_attempts) {
-      attempts++;
-      
-      int row = randomInteger(0, grid_cell_size);
-      int col = randomInteger(0, grid_cell_size);
-      
-      // Skip if cell is already empty
-      if (grid.getValue(row, col) == -1) {
-        continue;
+    List<Tuple2<Integer, Integer>> candidate_cells = new ArrayList<>();
+    for (int row = 0; row < grid_cell_size; row++) {
+      for (int col = 0; col < grid_cell_size; col++) {
+        candidate_cells.add(new Tuple2<>(row, col));
       }
-      
-      // Skip if cell has already been removed
-      if (removed_cells[row][col]) {
+    }
+    shuffleCells(candidate_cells);
+    
+    for (Tuple2<Integer, Integer> candidate : candidate_cells) {
+      if (cells_removed >= target_to_remove) {
+        break;
+      }
+      int row = candidate.first();
+      int col = candidate.second();
+      if (grid.getValue(row, col) == -1) {
         continue;
       }
       
@@ -147,7 +142,7 @@ public class SudokuGenerator implements ISudokuGenerator{
       for (Tuple2<Integer, Integer> cell : cells_to_remove) {
         int r = cell.first();
         int c = cell.second();
-        if (grid.getValue(r, c) == -1 || removed_cells[r][c]) {
+        if (grid.getValue(r, c) == -1) {
           can_remove_all = false;
           break;
         }
@@ -163,12 +158,28 @@ public class SudokuGenerator implements ISudokuGenerator{
       }
 
       // Remove the cells
+      int[] original_values = new int[cells_to_remove.size()];
+      int index = 0;
       for (Tuple2<Integer, Integer> cell : cells_to_remove) {
         int r = cell.first();
         int c = cell.second();
+        original_values[index++] = grid.getValue(r, c);
         grid.setValue(r, c, -1);
-        removed_cells[r][c] = true;
-        cells_removed++;
+      }
+
+      if (hasUniqueSolution && solver.solveGrid(2).size() != 1) {
+        index = 0;
+        for (Tuple2<Integer, Integer> cell : cells_to_remove) {
+          int r = cell.first();
+          int c = cell.second();
+          grid.setValue(r, c, original_values[index++]);
+        }
+        continue;
+      }
+
+      cells_removed += cells_to_remove.size();
+      if (cells_removed >= max_cells) {
+        break;
       }
     }
     
@@ -176,18 +187,17 @@ public class SudokuGenerator implements ISudokuGenerator{
     if (cells_removed < min_cells) {
       return false;
     }
-    
-    // If unique solution is required, verify it
-    if (hasUniqueSolution) {
-      // Only need to find at most 2 solutions: if exactly 1, it's unique; if 2+, it's not unique
-      Set<IGridState> solutions = solver.solveGrid(2);
-      if (solutions.size() != 1) {
-        // Puzzle has multiple or no solutions, reject and try again
-        return false;
-      }
-    }
-    
+
     return true;
+  }
+
+  private void shuffleCells(List<Tuple2<Integer, Integer>> cells) {
+    for (int i = cells.size() - 1; i > 0; i--) {
+      int j = randomInteger(0, i + 1);
+      Tuple2<Integer, Integer> temp = cells.get(i);
+      cells.set(i, cells.get(j));
+      cells.set(j, temp);
+    }
   }
   
   /**

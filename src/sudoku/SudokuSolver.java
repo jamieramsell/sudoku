@@ -67,6 +67,9 @@ public class SudokuSolver implements ISudokuSolver {
 
     int row = emptyCell.first();
     int column = emptyCell.second();
+    if (row == -1 || column == -1) {
+      return;
+    }
 
     for (int candidate = 1; candidate <= 9; candidate++) {
       if (ISudokuSolver.isPlacementValid(workingGrid, row, column, candidate)) {
@@ -81,16 +84,34 @@ public class SudokuSolver implements ISudokuSolver {
   // Convenience method to find & return the next empty cell
   private static Tuple2<Integer, Integer> findNextEmptyCell(IGridState grid_to_check) {
 
+    Tuple2<Integer, Integer> bestCell = null;
+    int minCandidates = Integer.MAX_VALUE;
+
     for (int row = 0; row < grid_to_check.getCellSize(); row++) {
       for (int column = 0; column < grid_to_check.getCellSize(); column++) {
 
         if (grid_to_check.getValue(row, column) == -1) {
-          return new Tuple2<>(row, column);
+          int candidateCount = 0;
+          for (int candidate = 1; candidate <= 9; candidate++) {
+            if (ISudokuSolver.isPlacementValid(grid_to_check, row, column, candidate)) {
+              candidateCount++;
+            }
+          }
+          if (candidateCount == 0) {
+            return new Tuple2<>(-1, -1);
+          }
+          if (candidateCount < minCandidates) {
+            minCandidates = candidateCount;
+            bestCell = new Tuple2<>(row, column);
+            if (candidateCount == 1) {
+              return bestCell;
+            }
+          }
         }
 
       }
     }
-    return null;
+    return bestCell;
   }
 
   @Override
