@@ -1,15 +1,6 @@
-public interface ISudokuGrid {
+package sudoku;
 
-  /**
-   * Initialises an empty sudoku grid with the given size.
-   * <p>Each row/column will be formed of {@code rows} rows and {@code columns} columns of 3x3
-   * sudoku squares.
-   * @author Jamie
-   * @param rows The number of rows of sudoku squares in the grid.
-   * @param columns The number of columns of sudoku squares in the grid.
-   * @return The created sudoku grid.
-   */
-  public int[][] initialiseGrid(int rows, int columns);
+public interface ISudokuGrid {
 
   /**
    * Gets the current value of a cell in a sudoku grid.
@@ -24,10 +15,11 @@ public interface ISudokuGrid {
   /**
    * Sets the value of a cell in a sudoku grid.
    * <p>Coordinates are indexed from (0, 0), which is the upper left-most cell in the grid.
-   * <p>Note that {@code 1 <= value <= 9}
+   * <p>Note that {@code 1 <= value <= 9}, or to set the cell as empty, {@code value = -1}
    * @author Jamie
    * @param row The row, or x-coordinate, of the cell
    * @param column The column, or y-coordinate, of the cell
+   * @param value The value of the cell
    */
   public void setValue(int row, int column, int value);
 
@@ -50,12 +42,27 @@ public interface ISudokuGrid {
    * @author Jamie
    * @return the emptied grid.
    */
-  public int[][] resetGrid();
+  public IGridState resetGrid();
 
   /**
    * Outputs the current state of the sudoku grid.
    * @author Jamie
    */
   public void displayGrid();
+
+  /**
+   * Gets the size of the grid in terms of the number of sudoku squares it contains
+   * @author Jamie
+   * @return a list of two integers, representing the number of rows, and the number of columns in
+   * the grid respectively.
+   */
+  public int[] getGridSize();
+
+  /**
+   * Returns a copy of the current state of the sudoku grid.
+   * @author Jamie
+   * @return the current state of the grid.
+   */
+  public IGridState getGrid();
 
 }
