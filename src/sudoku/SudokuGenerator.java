@@ -9,6 +9,7 @@ public class SudokuGenerator implements ISudokuGenerator{
   private final PuzzleSymmetry symmetry;
   private ISudokuGrid grid;
   private final int grid_cell_size;
+  private final List<Tuple2<Integer, Integer>> all_cells;
   private ISudokuSolver solver;
 
   /**
@@ -23,6 +24,12 @@ public class SudokuGenerator implements ISudokuGenerator{
     this.symmetry = symmetry;
     this.grid = new SudokuGrid();
     this.grid_cell_size = grid.getGrid().getCellSize();
+    this.all_cells = new ArrayList<>();
+    for (int row = 0; row < grid_cell_size; row++) {
+      for (int col = 0; col < grid_cell_size; col++) {
+        this.all_cells.add(new Tuple2<>(row, col));
+      }
+    }
     this.solver = new SudokuSolver(grid);
   }
 
@@ -116,15 +123,9 @@ public class SudokuGenerator implements ISudokuGenerator{
     int target_to_remove = randomInteger(min_cells, max_cells + 1);
     
     int cells_removed = 0;
-    List<Tuple2<Integer, Integer>> candidate_cells = new ArrayList<>();
-    for (int row = 0; row < grid_cell_size; row++) {
-      for (int col = 0; col < grid_cell_size; col++) {
-        candidate_cells.add(new Tuple2<>(row, col));
-      }
-    }
-    shuffleCells(candidate_cells);
+    shuffleCells(all_cells);
     
-    for (Tuple2<Integer, Integer> candidate : candidate_cells) {
+    for (Tuple2<Integer, Integer> candidate : all_cells) {
       if (cells_removed >= target_to_remove) {
         break;
       }
