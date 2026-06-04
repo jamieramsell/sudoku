@@ -6,13 +6,8 @@ class GridState implements IGridState {
   private final int size;
 
   /**
-   * Initialises an empty sudoku grid with the given size.
-   * <p>Each row/column will be formed of {@code rows} rows and {@code columns} columns of 3x3
-   * sudoku squares.
-   * @author Jamie
-   * @param rows The number of rows of sudoku squares in the grid.
-   * @param columns The number of columns of sudoku squares in the grid.
-   * @return The created empty grid.
+   * Initialises an empty 9x9 sudoku grid.
+   * <p>Empty cells are represented by {@code -1}.
    */
   public GridState() {
 
