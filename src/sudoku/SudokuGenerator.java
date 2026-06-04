@@ -43,7 +43,6 @@ public class SudokuGenerator implements ISudokuGenerator{
   /**
    * Convenience method to generate a random completely filled Sudoku puzzle.
    * <p>This method acts directly upon {@code grid}, rather than returning an updated version.
-   * @param hasUniqueSolution Whether or not the generated puzzle should only have one solution.
    */
   private void generateFullGrid() {
     // Reset the grid to empty state
