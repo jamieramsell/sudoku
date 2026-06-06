@@ -1,7 +1,6 @@
 package sudoku.generation;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Set;
 
 import sudoku.ISudokuGrid;

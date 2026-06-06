@@ -1,7 +1,6 @@
 package sudoku.generation;
 
 import sudoku.Tuple2;
-import sudoku.generation.symmetry.AbstractSymmetry;
 import sudoku.ISudokuGrid;
 
 public interface ISudokuGenerator {
