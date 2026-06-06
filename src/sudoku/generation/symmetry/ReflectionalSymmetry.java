@@ -19,6 +19,7 @@ public class ReflectionalSymmetry extends AbstractSymmetry {
     checkBounds(row, col);
     
     List<Tuple2<Integer, Integer>> cells = new ArrayList<>();
+    cells.add(new Tuple2<>(row, col));
 
     // Vertical mirror symmetry (left-right)
     int sym_col = grid_cell_size - 1 - col;
