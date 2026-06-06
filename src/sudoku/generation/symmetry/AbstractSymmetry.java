@@ -28,7 +28,7 @@ public abstract class AbstractSymmetry {
     if (row < 0 || row >= grid_cell_size) {
       throw new IndexOutOfBoundsException("row does not exist within the sudoku grid.");
     } else if (col < 0 || col >= grid_cell_size) {
-      throw new IndexOutOfBoundsException("row does not exist within the sudoku grid.");
+      throw new IndexOutOfBoundsException("col does not exist within the sudoku grid.");
     }
   }
 
