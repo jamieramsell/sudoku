@@ -1,4 +1,8 @@
-package sudoku;
+package sudoku.generation;
+
+import sudoku.Tuple2;
+import sudoku.generation.symmetry.AbstractSymmetry;
+import sudoku.ISudokuGrid;
 
 public interface ISudokuGenerator {
 
@@ -47,43 +51,11 @@ public interface ISudokuGenerator {
   }
 
   /**
-   * Represents the traditional symmetric pattern of the Sudoku puzzle to be generated.
-   * @see https://www.clarity-media.co.uk/viewblog.php?id=sudoku-and-symmetry
-   */
-  public static enum PuzzleSymmetry {
-    
-    /**
-     * Two-fold (180 degree) rotation: the grid looks the same if you turn it completely upside
-     * down.
-     */
-    ROTATIONAL,
-
-    /**
-     * The givens are mirrored vertically, creating identical left-to-right halves.
-     */
-    REFLECTIONAL,
-
-    /**
-     * The puzzle is to be symmetric both rotationally and reflectionally.
-     */
-    DIHEDRAL,
-
-    /**
-     * There is to be no enforced symmetry in the puzzle.
-     */
-    NONE
-
-  }
-
-  /**
    * Generates the initial grid for a random Sudoku puzzle.
    * @param hasUniqueSolution Whether or not the generated puzzle should only have one solution.
    * Note that the removal of the requirement of having a unique solution can make solving a puzzle
    * much less challenging.
    * @return an {@link ISudokuGrid} representing the initial state of the puzzle.
-   * 
-   * @see PuzzleDifficulty
-   * @see PuzzleSymmetry
    */
   public ISudokuGrid generatePuzzle(boolean hasUniqueSolution);
 

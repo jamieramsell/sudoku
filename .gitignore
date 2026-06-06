@@ -25,3 +25,6 @@ replay_pid*
 
 # VS Code settings file #
 settings.json
+
+# DS Store files #
+.DS_Store
