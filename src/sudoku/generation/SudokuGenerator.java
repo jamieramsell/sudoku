@@ -1,13 +1,21 @@
-package sudoku;
+package sudoku.generation;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
 
+import sudoku.ISudokuGrid;
+import sudoku.IGridState;
+import sudoku.ISudokuSolver;
+import sudoku.SudokuGrid;
+import sudoku.SudokuSolver;
+import sudoku.Tuple2;
+import sudoku.generation.symmetry.AbstractSymmetry;
+
 public class SudokuGenerator implements ISudokuGenerator{
 
   private final PuzzleDifficulty difficulty;
-  private final PuzzleSymmetry symmetry;
+  private final AbstractSymmetry symmetry;
   private ISudokuGrid grid;
   private final int grid_cell_size;
   private ISudokuSolver solver;
@@ -18,8 +26,11 @@ public class SudokuGenerator implements ISudokuGenerator{
    * @param difficulty The difficulty of the puzzle represents how many cells should already be
    * filled when starting the puzzle, or alternatively, how many cells the algorithm should remove.
    * @param symmetry Represents the symmetry (if any) of the initial state of the puzzle.
+   * 
+   * @see PuzzleDifficulty
+   * @see AbstractSymmetry
    */
-  public SudokuGenerator(PuzzleDifficulty difficulty, PuzzleSymmetry symmetry) {
+  public SudokuGenerator(PuzzleDifficulty difficulty, AbstractSymmetry symmetry) {
     this.difficulty = difficulty;
     this.symmetry = symmetry;
     this.grid = new SudokuGrid();
@@ -140,7 +151,7 @@ public class SudokuGenerator implements ISudokuGenerator{
       }
       
       // Calculate symmetric cells based on symmetry type
-      List<Tuple2<Integer, Integer>> cells_to_remove = getSymmetricCells(row, col);
+      List<Tuple2<Integer, Integer>> cells_to_remove = symmetry.getSymmetricCells(row, col);
       
       // Check if all symmetric cells can be removed
       boolean can_remove_all = true;
@@ -188,74 +199,6 @@ public class SudokuGenerator implements ISudokuGenerator{
     }
     
     return true;
-  }
-  
-  /**
-   * Gets the list of cells that should be removed based on the symmetry pattern.
-   * @param row The row of the primary cell
-   * @param col The column of the primary cell
-   * @return A list of cells to remove
-   */
-  private List<Tuple2<Integer, Integer>> getSymmetricCells(int row, int col) {
-    List<Tuple2<Integer, Integer>> cells = new ArrayList<>();
-    cells.add(new Tuple2<>(row, col));
-    
-    switch (symmetry) {
-      case ROTATIONAL -> {
-        // 180-degree rotational symmetry
-        int sym_row = grid_cell_size - 1 - row;
-        int sym_col = grid_cell_size - 1 - col;
-        if (sym_row != row || sym_col != col) {
-          cells.add(new Tuple2<>(sym_row, sym_col));
-        }
-      }
-      case REFLECTIONAL -> {
-        // Vertical mirror symmetry (left-right)
-        int sym_col = grid_cell_size - 1 - col;
-        if (sym_col != col) {
-          cells.add(new Tuple2<>(row, sym_col));
-        }
-      }
-      case DIHEDRAL -> {
-        // Both rotational and reflectional symmetry (4-fold symmetry)
-        int sym_row = grid_cell_size - 1 - row;
-        int sym_col = grid_cell_size - 1 - col;
-        
-        // Add reflection across vertical axis (left-right mirror)
-        if (sym_col != col) {
-          cells.add(new Tuple2<>(row, sym_col));
-        }
-        // Add reflection across horizontal axis (top-bottom mirror)
-        if (sym_row != row) {
-          cells.add(new Tuple2<>(sym_row, col));
-        }
-        // Add 180-degree rotation (point symmetry around center)
-        if ((sym_row != row || sym_col != col) && !hasDuplicate(cells, sym_row, sym_col)) {
-          cells.add(new Tuple2<>(sym_row, sym_col));
-        }
-      }
-      case NONE -> {
-        // No symmetry, just remove the single cell
-      }
-    }
-    
-    return cells;
-  }
-  
-  /**
-   * Checks if a cell is already in the list.
-   * @param cells The list of cells
-   * @param row The row to check
-   * @param col The column to check
-   * @return true if the cell is already in the list, false otherwise
-   */
-  private boolean hasDuplicate(List<Tuple2<Integer, Integer>> cells, int row, int col) {
-    for (Tuple2<Integer, Integer> cell : cells) {
-      if (cell.first() == row && cell.second() == col) {
-        return true;
-      }
-    }
-    return false;
   }
   
   /**
