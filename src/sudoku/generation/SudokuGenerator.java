@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Set;
 
 import sudoku.ISudokuGrid;
-import sudoku.IGridState;
 import sudoku.ISudokuSolver;
+import sudoku.GridState;
 import sudoku.SudokuGrid;
 import sudoku.SudokuSolver;
 import sudoku.Tuple2;
@@ -190,7 +190,7 @@ public class SudokuGenerator implements ISudokuGenerator{
     // If unique solution is required, verify it
     if (hasUniqueSolution) {
       // Only need to find at most 2 solutions: if exactly 1, it's unique; if 2+, it's not unique
-      Set<IGridState> solutions = solver.solveGrid(2);
+      Set<GridState> solutions = solver.solveGrid(2);
       if (solutions.size() != 1) {
         // Puzzle has multiple or no solutions, reject and try again
         return false;
