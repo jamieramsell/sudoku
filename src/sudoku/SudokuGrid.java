@@ -39,7 +39,7 @@ public class SudokuGrid implements ISudokuGrid {
           stringBuilderCache.append("\n\n");
 
           // In every row n, where n is a multiple of 3:
-          if (row / 3 == 0) {
+          if (row % 3 == 0) {
 
             // 5 characters per square; 3 characters per seperator
             // Num seperators = num squares - 1
