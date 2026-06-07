@@ -7,7 +7,7 @@ public class SudokuGrid implements ISudokuGrid {
 
   // Attributes
   int size;
-  IGridState grid;
+  GridState grid;
   StringCache string_cache;
 
   /**
@@ -211,7 +211,7 @@ public class SudokuGrid implements ISudokuGrid {
   }
 
   @Override
-  public IGridState resetGrid() {
+  public GridState resetGrid() {
 
     for (int row = 0; row < size * 3; row++) {
       for (int col = 0; col < size * 3; col++) {
@@ -241,7 +241,7 @@ public class SudokuGrid implements ISudokuGrid {
   }
 
   @Override
-  public IGridState getGrid() {
+  public GridState getGrid() {
     return grid.clone();
   }
 

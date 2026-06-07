@@ -27,20 +27,20 @@ public class SudokuSolver implements ISudokuSolver {
   }
 
   @Override
-  public Set<IGridState> solveGrid() {
+  public Set<GridState> solveGrid() {
     return solveGrid(-1);
   }
 
   @Override
-  public Set<IGridState> solveGrid(int solutions_required) {
+  public Set<GridState> solveGrid(int solutions_required) {
 
     if (solutions_required == 0 || solutions_required < -1) {
       throw new IllegalArgumentException("solutions_required must be >= 1, or set to -1 to " +
       "generate all possible solutions.");
     }
 
-    IGridState workingGrid = grid.getGrid();
-    Set<IGridState> solutions = new HashSet<>();
+    GridState workingGrid = grid.getGrid();
+    Set<GridState> solutions = new HashSet<>();
 
     if (!grid.isValid() || !ISudokuSolver.isGridStateValid(workingGrid)) {
       return solutions;
@@ -52,7 +52,7 @@ public class SudokuSolver implements ISudokuSolver {
 
   // Convenience method to contain the exhaustive search which finds all solutions to a puzzle in
   // a given state.
-  private static void solve(IGridState workingGrid, Set<IGridState> solutions,
+  private static void solve(GridState workingGrid, Set<GridState> solutions,
       int solutions_required) {
 
     if (solutions.size() == solutions_required) {
@@ -79,7 +79,7 @@ public class SudokuSolver implements ISudokuSolver {
   }
 
   // Convenience method to find & return the next empty cell
-  private static Tuple2<Integer, Integer> findNextEmptyCell(IGridState grid_to_check) {
+  private static Tuple2<Integer, Integer> findNextEmptyCell(GridState grid_to_check) {
 
     for (int row = 0; row < grid_to_check.getCellSize(); row++) {
       for (int column = 0; column < grid_to_check.getCellSize(); column++) {

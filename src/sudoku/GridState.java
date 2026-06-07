@@ -1,6 +1,6 @@
 package sudoku;
 
-class GridState implements IGridState {
+public class GridState {
 
   private int[][] grid;
   private final int size;
@@ -24,12 +24,10 @@ class GridState implements IGridState {
 
   }
 
-  @Override
   public int getValue(int row, int column) {
     return grid[row][column];
   }
 
-  @Override
   public void setValue(int row, int column, int value) {
     if ((value < 1 || value > 9) && value != -1) {
       throw new IllegalArgumentException("value must be either -1, or between 1 and 9 " +
@@ -39,17 +37,14 @@ class GridState implements IGridState {
     }
   }
 
-  @Override
   public int getSize() {
     return size;
   }
 
-  @Override
   public int getCellSize() {
     return size * size;
   }
 
-  @Override
   public boolean equals(Object other) {
     
     if (!(other instanceof GridState)) {
@@ -69,7 +64,6 @@ class GridState implements IGridState {
 
   }
 
-  @Override
   public int hashCode() {
     int hash = 17;
     for (int[] row : grid) {
@@ -83,7 +77,6 @@ class GridState implements IGridState {
     return hash;
   }
 
-  @Override
   public GridState clone() {
 
     // Create a deep copy

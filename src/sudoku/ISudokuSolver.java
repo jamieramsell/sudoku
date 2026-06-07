@@ -25,7 +25,7 @@ public interface ISudokuSolver {
    * @author Jamie
    * @return the (possibly empty) set of all possible solutions for the grid.
    */
-  public Set<IGridState> solveGrid();
+  public Set<GridState> solveGrid();
 
   /**
    * Computes a set of solutions for the sudoku grid in its current state.
@@ -33,7 +33,7 @@ public interface ISudokuSolver {
    * @param solutions_required The maximum number of solutions that should be generated.
    * @return the (possibly empty) set of possible solutions for the grid.
    */
-  public Set<IGridState> solveGrid(int solutions_required);
+  public Set<GridState> solveGrid(int solutions_required);
 
   /**
    * Checks whether setting a given cell to a certain value would follow the rules of Sudoku.
@@ -58,7 +58,7 @@ public interface ISudokuSolver {
    * @return Whether {@code value} can be inserted into {@code grid_to_check} at
    * {@code (row, column)}.
    */
-  static boolean isPlacementValid(IGridState grid_to_check, int row, int column, int value) {
+  static boolean isPlacementValid(GridState grid_to_check, int row, int column, int value) {
 
     // Can use a single for loop here as a grid is always square
     for (int index = 0; index < (grid_to_check.getCellSize()); index++) {
@@ -96,7 +96,7 @@ public interface ISudokuSolver {
    * @param grid_to_check The grid state to check.
    * @return Whether the grid state is valid.
    */
-  public static boolean isGridStateValid(IGridState grid_to_check) {
+  public static boolean isGridStateValid(GridState grid_to_check) {
 
     for (int row = 0; row < grid_to_check.getCellSize(); row++) {
       for (int column = 0; column < grid_to_check.getCellSize(); column++) {

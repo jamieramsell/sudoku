@@ -42,7 +42,7 @@ public interface ISudokuGrid {
    * @author Jamie
    * @return the emptied grid.
    */
-  public IGridState resetGrid();
+  public GridState resetGrid();
 
   /**
    * Outputs the current state of the sudoku grid.
@@ -63,6 +63,6 @@ public interface ISudokuGrid {
    * @author Jamie
    * @return the current state of the grid.
    */
-  public IGridState getGrid();
+  public GridState getGrid();
 
 }
