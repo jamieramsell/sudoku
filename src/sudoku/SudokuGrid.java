@@ -1,5 +1,8 @@
 package sudoku;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public class SudokuGrid implements ISudokuGrid {
 
   // Constants
@@ -19,8 +22,7 @@ public class SudokuGrid implements ISudokuGrid {
 
     private StringBuilder stringBuilderCache;
     private String cache;
-    private int[] rowStartIndices;
-    private int[] rowEndIndices;
+    private List<Tuple2<Integer, Integer>> row_indices;
     private boolean[] dirtyRows;
 
     public StringCache() {
@@ -28,8 +30,7 @@ public class SudokuGrid implements ISudokuGrid {
       // Initialise attributes
       int rows = size * size; // Number of rows in sudoku grid
       stringBuilderCache = new StringBuilder();
-      rowStartIndices = new int[rows];
-      rowEndIndices = new int[rows];
+      row_indices = new ArrayList<>(rows);
       dirtyRows = new boolean[rows];
 
       // Create a string representation of the grid
@@ -54,10 +55,11 @@ public class SudokuGrid implements ISudokuGrid {
           }
         }
 
-        // Build each row of values
-        rowStartIndices[row] = stringBuilderCache.length();
+        // Build each row & update row_indices values
+        int row_start_index = stringBuilderCache.length();
         stringBuilderCache.append(formatRow(row));
-        rowEndIndices[row] = stringBuilderCache.length();
+        int row_end_index = stringBuilderCache.length();
+        row_indices.set(row, new Tuple2<>(row_start_index, row_end_index));
 
       }
 
@@ -132,23 +134,11 @@ public class SudokuGrid implements ISudokuGrid {
 
     // Convenience function to replace an outdated row in cache.
     private void replaceRowInCache(int row, String newRowString) {
-      int rowStart = rowStartIndices[row];
-      int rowEnd = rowEndIndices[row];
-      int originalLength = rowEnd - rowStart;
-      int replacementLength = newRowString.length();
-      int delta = replacementLength - originalLength;
+      int rowStart = row_indices.get(row).first();
+      int rowEnd = row_indices.get(row).second();
 
       // Update stringBuilderCache
       stringBuilderCache.replace(rowStart, rowEnd, newRowString);
-      rowEndIndices[row] = rowStart + replacementLength;
-
-      // Update pointers if necessary
-      if (delta != 0) {
-        for (int remainingRow = row + 1; remainingRow < rowStartIndices.length; remainingRow++) {
-          rowStartIndices[remainingRow] += delta;
-          rowEndIndices[remainingRow] += delta;
-        }
-      }
     }
   }
 
