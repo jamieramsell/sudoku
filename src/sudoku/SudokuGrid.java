@@ -9,7 +9,7 @@ public class SudokuGrid implements ISudokuGrid {
   final int DEFAULT_SIZE = 3;
 
   // Attributes
-  int size;
+  final int size;
   GridState grid;
   StringCache string_cache;
 
