@@ -20,24 +20,24 @@ public class SudokuGrid implements ISudokuGrid {
    */
   private class StringCache {
 
-    private StringBuilder stringBuilderCache;
+    private StringBuilder string_builder_cache;
     private String cache;
     private List<Tuple2<Integer, Integer>> row_indices;
-    private boolean[] dirtyRows;
+    private boolean[] dirty_rows;
 
     public StringCache() {
 
       // Initialise attributes
       int rows = size * size; // Number of rows in sudoku grid
-      stringBuilderCache = new StringBuilder();
+      string_builder_cache = new StringBuilder();
       row_indices = new ArrayList<>(rows);
-      dirtyRows = new boolean[rows];
+      dirty_rows = new boolean[rows];
 
       // Create a string representation of the grid
       for (int row = 0; row < rows; row++) {
 
         if (row != 0) {
-          stringBuilderCache.append("\n\n");
+          string_builder_cache.append("\n\n");
 
           // In every row n, where n is a multiple of 3:
           if (row % 3 == 0) {
@@ -47,47 +47,47 @@ public class SudokuGrid implements ISudokuGrid {
             int num_columns = (size * 5) + ((size - 1) * 3);
 
             for (int i = 0; i < num_columns; i++) {
-              stringBuilderCache.append("-");
+              string_builder_cache.append("-");
             }
 
-            stringBuilderCache.append("\n\n");
+            string_builder_cache.append("\n\n");
 
           }
         }
 
         // Build each row & update row_indices values
-        int row_start_index = stringBuilderCache.length();
-        stringBuilderCache.append(formatRow(row));
-        int row_end_index = stringBuilderCache.length();
+        int row_start_index = string_builder_cache.length();
+        string_builder_cache.append(formatRow(row));
+        int row_end_index = string_builder_cache.length();
         row_indices.set(row, new Tuple2<>(row_start_index, row_end_index));
 
       }
 
       // Generate string representation
-      this.cache = stringBuilderCache.toString();
+      this.cache = string_builder_cache.toString();
     }
 
     // Convenience method to build the given row of the string
     private String formatRow(int row) {
-      StringBuilder rowOutput = new StringBuilder();
+      StringBuilder row_output = new StringBuilder();
 
       for (int column = 0; column < (size * size); column++) {
         if (column > 0) {
-          rowOutput.append(' ');
+          row_output.append(' ');
 
           if (column % 3 == 0) {
-            rowOutput.append("| ");
+            row_output.append("| ");
           }
         }
         int value = grid.getValue(row, column);
         if (value == -1) {
-          rowOutput.append('X'); // Represent empty cells with an X
+          row_output.append('X'); // Represent empty cells with an X
         } else {
-          rowOutput.append(value);
+          row_output.append(value);
         }
       }
 
-      return rowOutput.toString();
+      return row_output.toString();
     }
 
     /**
@@ -96,21 +96,21 @@ public class SudokuGrid implements ISudokuGrid {
      * @param row The row to mark as 'dirty'
      */
     public void markRowDirty(int row) {
-      if (dirtyRows == null) {
+      if (dirty_rows == null) {
         throw new IllegalStateException("StringCache has not yet been initialised.");
       } else if (row < 0 || row > size * size - 1) {
         throw new IndexOutOfBoundsException("row provided is not a valid row within the sudoku"
             + " grid.");
       } else { // Mark row as dirty & reset cache
-        dirtyRows[row] = true; 
+        dirty_rows[row] = true; 
         cache = null;
       }
     }
     
     public String getCache() {
-      updateDirtyRowsInCache();
+      updatedirty_rowsInCache();
       if (cache == null) { // If cache has been updated, regenerate it
-        cache = stringBuilderCache.toString();
+        cache = string_builder_cache.toString();
       }
       return cache;
     }
@@ -119,26 +119,26 @@ public class SudokuGrid implements ISudokuGrid {
      * Convenience method to update cache to reflect any changes since the last update.
      * <p> This method must always be called before StringCache.cache is accessed.
      */
-    private void updateDirtyRowsInCache() {
-      if (dirtyRows == null) { // If no rows are dirty then there is nothing to update
+    private void updatedirty_rowsInCache() {
+      if (dirty_rows == null) { // If no rows are dirty then there is nothing to update
         return;
       }
 
-      for (int row = 0; row < dirtyRows.length; row++) {
-        if (dirtyRows[row]) { // Rebuild all rows with dirty marker
+      for (int row = 0; row < dirty_rows.length; row++) {
+        if (dirty_rows[row]) { // Rebuild all rows with dirty marker
           replaceRowInCache(row, formatRow(row));
-          dirtyRows[row] = false;
+          dirty_rows[row] = false;
         }
       }
     }
 
     // Convenience function to replace an outdated row in cache.
     private void replaceRowInCache(int row, String newRowString) {
-      int rowStart = row_indices.get(row).first();
-      int rowEnd = row_indices.get(row).second();
+      int row_start = row_indices.get(row).first();
+      int row_end = row_indices.get(row).second();
 
-      // Update stringBuilderCache
-      stringBuilderCache.replace(rowStart, rowEnd, newRowString);
+      // Update string_builder_cache
+      string_builder_cache.replace(row_start, row_end, newRowString);
     }
   }
 
