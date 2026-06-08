@@ -105,7 +105,10 @@ public class SudokuSolver implements ISudokuSolver {
     }
 
     int[] grid_size = grid.getGridSize();
-    if (row < 0 || row >= grid_size[0] * 3 || column < 0 || column >= grid_size[1] * 3) {
+    if (row < 0
+        || row >= grid_size[0] * grid_size[0]
+        || column < 0
+        || column >= grid_size[1] * grid_size[1]) {
       throw new IndexOutOfBoundsException("row or column out of bounds");
     }
 

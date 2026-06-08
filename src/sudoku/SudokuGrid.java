@@ -177,7 +177,7 @@ public class SudokuGrid implements ISudokuGrid {
 
   @Override
   public void setValue(int row, int column, int value) {
-    if ((value < 1 || value > 9) && value != -1) {
+    if ((value < 1 || value > size) && value != -1) {
       throw new IllegalArgumentException("value must be either -1, or between 1 and 9 " +
           "inclusive.");
     } else {
@@ -211,8 +211,8 @@ public class SudokuGrid implements ISudokuGrid {
   @Override
   public GridState resetGrid() {
 
-    for (int row = 0; row < size * 3; row++) {
-      for (int col = 0; col < size * 3; col++) {
+    for (int row = 0; row < size * size; row++) {
+      for (int col = 0; col < size * size; col++) {
         grid.setValue(row, col, -1);
       }
       string_cache.markRowDirty(row);
