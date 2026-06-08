@@ -59,22 +59,42 @@ public class SudokuGridState implements ISudokuState {
   }
 
   @Override
+  public boolean checkForDuplicates(int row, int column) {
+    Tuple2<ISudokuState, Tuple2<Integer, Integer>> box_data = findBoxOfCell(row, column);
+    ISudokuState box_containing_cell = box_data.first();
+    int cell_row = box_data.second().first();
+    int cell_col = box_data.second().second();
+
+    return box_containing_cell.checkForDuplicates(cell_row, cell_col);
+  }  
+
+  // Getters //
+
+  @Override
+  public Tuple2<Integer, Integer> getGridDimensions() {
+    return grid_dimensions;
+  }
+
+  @Override
   public int getValue(int row, int column) {
     validateCoordinates(row, column);
 
-    // Find the box in which the given cell is stored
-    int box_row = row / box_dimensions.first();
-    int box_col = column / box_dimensions.second();
-    ISudokuState box_containing_cell = grid.get(box_row).get(box_col);
-
-    // Find coordinates of the cell within that box
-    int cell_row = row % box_dimensions.first();
-    int cell_col = column % box_dimensions.second();
+    Tuple2<ISudokuState, Tuple2<Integer, Integer>> box_data = findBoxOfCell(row, column);
+    ISudokuState box_containing_cell = box_data.first();
+    int cell_row = box_data.second().first();
+    int cell_col = box_data.second().second();
 
     // Find cell value & return
     int cell_value = box_containing_cell.getValue(cell_row, cell_col);
     return cell_value;
   }
+
+  @Override
+  public int getSize() {
+    return size;
+  }
+
+  // Setters //
 
   @Override
   public void setValue(int row, int column, int value) {
@@ -85,38 +105,15 @@ public class SudokuGridState implements ISudokuState {
           " inclusive.");
     } 
 
-    // Find the box in which the given cell is stored
-    int box_row = row / box_dimensions.first();
-    int box_col = column / box_dimensions.second();
-    ISudokuState box_containing_cell = grid.get(box_row).get(box_col);
-
-    // Find coordinates of the cell within that box & assign value
-    int cell_row = row % box_dimensions.first();
-    int cell_col = column % box_dimensions.second();
+    Tuple2<ISudokuState, Tuple2<Integer, Integer>> box_data = findBoxOfCell(row, column);
+    ISudokuState box_containing_cell = box_data.first();
+    int cell_row = box_data.second().first();
+    int cell_col = box_data.second().second();
+    
     box_containing_cell.setValue(cell_row, cell_col, value);
   }
 
-  /**
-   * Convenience method to validate that the cell at the given coordinates exists within the grid.
-   * @param row The row (or y-coordinate) of the cell to check.
-   * @param col The column (or x-coordinate) of the cell to check.
-   * @throws IndexOutOfBoundsException if the given cell is out of bounds of the grid.
-   */
-  private void validateCoordinates(int row, int col) {
-    if (row < 0 || col < 0 || row > size || col > size) {
-      throw new IndexOutOfBoundsException("Target cell does not exist within the grid.");
-    }
-  }
-
-  @Override
-  public int getSize() {
-    return size;
-  }
-
-  @Override
-  public Tuple2<Integer, Integer> getGridDimensions() {
-    return grid_dimensions;
-  }
+  // Object Overrides //
 
   @Override
   public boolean equals(Object other) {
@@ -176,6 +173,47 @@ public class SudokuGridState implements ISudokuState {
     }
 
     return clone;
+  }
+
+  // Convenience Methods //
+
+  /**
+   * Validates that the cell at the given coordinates exists within the grid.
+   * @param row The row (or y-coordinate) of the cell to check.
+   * @param col The column (or x-coordinate) of the cell to check.
+   * @throws IndexOutOfBoundsException if the given cell is out of bounds of the grid.
+   */
+  private void validateCoordinates(int row, int col) {
+    if (row < 0 || col < 0 || row > size || col > size) {
+      throw new IndexOutOfBoundsException("Target cell does not exist within the grid.");
+    }
+  }
+
+  /**
+   * Finds the {@code ISudokuState} which contains the cell and returns it, as well as the cell's
+   * relative coordinates within that state.
+   * @param row The row (or y-coordinate) of the cell to find.
+   * @param col The column (or x-coordinate) of the cell to find.
+   * @returns A {@code Tuple2}, which contains the {@code ISudokuState}, as well as another tuple,
+   * which itself contains the relative row and column of the cell respectively.
+   */
+  private Tuple2<ISudokuState, Tuple2<Integer, Integer>> findBoxOfCell(int row, int col) {
+    validateCoordinates(row, col);
+
+    // Find the box in which the given cell is stored
+    int box_row = row / box_dimensions.first();
+    int box_col = col / box_dimensions.second();
+    ISudokuState box_containing_cell = grid.get(box_row).get(box_col);
+
+    // Find the relative coordinates of the cell
+    int cell_row = row % box_dimensions.first();
+    int cell_col = col % box_dimensions.second();
+
+    // Generate & return required values
+    Tuple2<Integer, Integer> coordinates = new Tuple2<>(cell_row, cell_col);
+    Tuple2<ISudokuState, Tuple2<Integer, Integer>> return_value
+        = new Tuple2<>(box_containing_cell, coordinates);
+    return return_value;
   }
 
 }

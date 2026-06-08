@@ -69,6 +69,25 @@ class SudokuBox implements ISudokuState {
   }
 
   @Override
+  public boolean checkForDuplicates(int row, int column) {
+    final int value = getValue(row, column);
+
+    for (int current_row = 0; current_row < rows; current_row++) {
+      for (int current_col = 0; current_col < columns; current_col++) {
+        if (current_row == row && current_col == column) {
+          continue; // Ignore target cell
+        } else if (getValue(current_row, current_col) == value) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  // Getters //
+
+  @Override
   public int getSize() {
     return size;
   }
@@ -83,6 +102,8 @@ class SudokuBox implements ISudokuState {
     return grid[row][column];
   }
 
+  // Setters //
+
   @Override
   public void setValue(int row, int column, int value) {
     if ((value < 1 || value > size) && value != -1) {
@@ -93,6 +114,8 @@ class SudokuBox implements ISudokuState {
     }
   }
 
+  // Object Overrides //
+  
   @Override
   public boolean equals(Object other) {
     if (!(other instanceof SudokuBox)) {

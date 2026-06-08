@@ -1,6 +1,6 @@
 package sudoku;
 
-public interface ISudokuGrid {
+public interface ISudokuGrid extends ISudokuState {
 
   // Constants
   public final int DEFAULT_SIZE = 9;
@@ -56,32 +56,19 @@ public interface ISudokuGrid {
    */
   public boolean isSolved();
 
-  /**
-   * Empties the sudoku grid of values, updates the stored grid, and returns a copy of it.
-   * @author Jamie
-   * @return the emptied grid.
-   */
-  public GridState resetGrid();
+  /** Empties the sudoku grid of values. */
+  public void resetGrid();
 
   /**
-   * Outputs the current state of the sudoku grid.
+   * Gets the size of the grid.
+   * <p> The size of a grid is determined as the range of values which it can contain.
+   * <p> A grid's size can range between 2-16.
    * @author Jamie
+   * @return the size of the grid.
    */
-  public void displayGrid();
+  public int getSize();
 
-  /**
-   * Gets the size of the grid in terms of the number of sudoku squares it contains
-   * @author Jamie
-   * @return a list of two integers, representing the number of rows, and the number of columns in
-   * the grid respectively.
-   */
-  public int[] getGridSize();
-
-  /**
-   * Returns a copy of the current state of the sudoku grid.
-   * @author Jamie
-   * @return the current state of the grid.
-   */
-  public GridState getGrid();
-
+  @Override
+  public ISudokuGrid clone();
+  
 }

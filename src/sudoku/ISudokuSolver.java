@@ -25,7 +25,7 @@ public interface ISudokuSolver {
    * @author Jamie
    * @return the (possibly empty) set of all possible solutions for the grid.
    */
-  public Set<GridState> solveGrid();
+  public Set<ISudokuGrid> solveGrid();
 
   /**
    * Computes a set of solutions for the sudoku grid in its current state.
@@ -33,7 +33,7 @@ public interface ISudokuSolver {
    * @param solutions_required The maximum number of solutions that should be generated.
    * @return the (possibly empty) set of possible solutions for the grid.
    */
-  public Set<GridState> solveGrid(int solutions_required);
+  public Set<ISudokuGrid> solveGrid(int solutions_required);
 
   /**
    * Checks whether setting a given cell to a certain value would follow the rules of Sudoku.
@@ -47,9 +47,10 @@ public interface ISudokuSolver {
   public boolean isValidMove(int row, int column, int value);
 
   /**
-   * General purpose method to check whether a move is legal in a given grid state.
-   * <p>Coordinates are indexed from (0, 0), which is the upper left-most cell in the grid.
-   * 
+   * Check whether a move is legal in a given grid state.
+   * <p> Coordinates are indexed from (0, 0), which is the upper left-most cell in the grid.
+   * <p> Note that this function does not check whether the current grid state itself is valid,
+   * only whether or not the placement of a specific cell is. 
    * @author Jamie
    * @param grid_to_check The current state of the grid to check.
    * @param row The row (x-coordinate) of the cell to check.
@@ -58,36 +59,35 @@ public interface ISudokuSolver {
    * @return Whether {@code value} can be inserted into {@code grid_to_check} at
    * {@code (row, column)}.
    */
-  static boolean isPlacementValid(GridState grid_to_check, int row, int column, int value) {
+  public static boolean isPlacementValid(ISudokuState grid_to_check, int row, int column, int value) {
 
-    // Can use a single for loop here as a grid is always square
-    for (int index = 0; index < (grid_to_check.getCellSize()); index++) {
-      if (index != column && grid_to_check.getValue(row, index) == value) {
-        return false;
+    Tuple2<Integer, Integer> grid_dimensions = grid_to_check.getGridDimensions();
+    final int rows = grid_dimensions.first();
+    final int cols = grid_dimensions.second();
+
+    /* First check all cells in the row, then all cells in the column.
+     * Ignore the target cell itself.
+     */
+    for (int current_row = 0; current_row < rows; current_row++) {
+      if (current_row == row) {
+        continue;
       }
-      if (index != row && grid_to_check.getValue(index, column) == value) {
+      if (grid_to_check.getValue(current_row, column) == value) {
         return false;
       }
     }
 
-    // Check if any cell in the box is a duplicate
-    int top_left_row = row - row % 3;
-    int top_left_col = column - column % 3;
-
-    for (int current_row = top_left_row; current_row < top_left_row + 3; current_row++) {
-      for (int current_col = top_left_col; current_col < top_left_col + 3; current_col++) {
-
-        if (current_row == row && current_col == column) {
-          continue; // Ignore the target cell's former value, which will be irrelevant once replaced
-        }
-        if (value == grid_to_check.getValue(current_row, current_col)) {
-          return false;
-        }
-
+    for (int current_col = 0; current_col < cols; current_col++) {
+      if (current_col == column) {
+        continue;
+      }
+      if (grid_to_check.getValue(row, current_col) == value) {
+        return false;
       }
     }
 
-    return true;
+    // Finally check if the cell is a duplicate of another value within in its box
+    return !(grid_to_check.checkForDuplicates(row, column));
   }
 
   /**
@@ -96,26 +96,27 @@ public interface ISudokuSolver {
    * @param grid_to_check The grid state to check.
    * @return Whether the grid state is valid.
    */
-  public static boolean isGridStateValid(GridState grid_to_check) {
+  public static boolean isGridStateValid(ISudokuState grid_to_check) {
 
-    for (int row = 0; row < grid_to_check.getCellSize(); row++) {
-      for (int column = 0; column < grid_to_check.getCellSize(); column++) {
+    Tuple2<Integer, Integer> grid_dimensions = grid_to_check.getGridDimensions();
+    int rows = grid_dimensions.first();
+    int cols = grid_dimensions.second();
 
-        int value = grid_to_check.getValue(row, column);
+    for (int row = 0; row < rows; row++) {
+      for (int col = 0; col < cols; col++) {
+        int value = grid_to_check.getValue(row, col);
 
         if (value == -1) { // Cells are always allowed to be empty
           continue;
-        } else if (value < 1 || value > 9) { // Check for out of bounds values
+        } else if (value < 1 || value > grid_to_check.getSize()) { // Check for out of bounds values
           return false;
         }
 
         // Check that the value of the current cell is legal
-        boolean valid = isPlacementValid(grid_to_check, row, column, value);
-
+        boolean valid = isPlacementValid(grid_to_check, row, col, value);
         if (!valid) {
           return false;
         }
-
       }
     }
 

@@ -27,20 +27,20 @@ public class SudokuSolver implements ISudokuSolver {
   }
 
   @Override
-  public Set<GridState> solveGrid() {
+  public Set<ISudokuGrid> solveGrid() {
     return solveGrid(-1);
   }
 
   @Override
-  public Set<GridState> solveGrid(int solutions_required) {
+  public Set<ISudokuGrid> solveGrid(int solutions_required) {
 
     if (solutions_required == 0 || solutions_required < -1) {
       throw new IllegalArgumentException("solutions_required must be >= 1, or set to -1 to " +
       "generate all possible solutions.");
     }
 
-    GridState workingGrid = grid.getGrid();
-    Set<GridState> solutions = new HashSet<>();
+    ISudokuGrid workingGrid = grid.clone();
+    Set<ISudokuGrid> solutions = new HashSet<>();
 
     if (!grid.isValid() || !ISudokuSolver.isGridStateValid(workingGrid)) {
       return solutions;
@@ -52,7 +52,7 @@ public class SudokuSolver implements ISudokuSolver {
 
   // Convenience method to contain the exhaustive search which finds all solutions to a puzzle in
   // a given state.
-  private static void solve(GridState workingGrid, Set<GridState> solutions,
+  private static void solve(ISudokuGrid workingGrid, Set<ISudokuGrid> solutions,
       int solutions_required) {
 
     if (solutions.size() == solutions_required) {
@@ -68,7 +68,7 @@ public class SudokuSolver implements ISudokuSolver {
     int row = emptyCell.first();
     int column = emptyCell.second();
 
-    for (int candidate = 1; candidate <= 9; candidate++) {
+    for (int candidate = 1; candidate <= workingGrid.getSize(); candidate++) {
       if (ISudokuSolver.isPlacementValid(workingGrid, row, column, candidate)) {
         workingGrid.setValue(row, column, candidate);
         solve(workingGrid, solutions, solutions_required);
@@ -79,10 +79,10 @@ public class SudokuSolver implements ISudokuSolver {
   }
 
   // Convenience method to find & return the next empty cell
-  private static Tuple2<Integer, Integer> findNextEmptyCell(GridState grid_to_check) {
+  private static Tuple2<Integer, Integer> findNextEmptyCell(ISudokuGrid grid_to_check) {
 
-    for (int row = 0; row < grid_to_check.getCellSize(); row++) {
-      for (int column = 0; column < grid_to_check.getCellSize(); column++) {
+    for (int row = 0; row < grid_to_check.getSize(); row++) {
+      for (int column = 0; column < grid_to_check.getSize(); column++) {
 
         if (grid_to_check.getValue(row, column) == -1) {
           return new Tuple2<>(row, column);
@@ -98,21 +98,18 @@ public class SudokuSolver implements ISudokuSolver {
     
     // Input Validation //
 
-    if (value == -1) { // Always allow cells to be emptied
+    if (value == -1) { // Always allow cells to be empty
       return true;
-    } else if (value < 1 || value > 9) {
-      throw new IllegalArgumentException("value must be either -1, or between 1 and 9 inclusive.");
+    } else if (value < 1 || value > grid.getSize()) {
+      throw new IllegalArgumentException("value must be either -1, or between 1 and "
+          + grid.getSize() + "  inclusive.");
     }
 
-    int[] grid_size = grid.getGridSize();
-    if (row < 0
-        || row >= grid_size[0] * grid_size[0]
-        || column < 0
-        || column >= grid_size[1] * grid_size[1]) {
+    if (row < 0 || row >= grid.getSize() || column < 0 || column >= grid.getSize()) {
       throw new IndexOutOfBoundsException("row or column out of bounds");
     }
 
-    return ISudokuSolver.isPlacementValid(grid.getGrid(), row, column, value);
+    return ISudokuSolver.isPlacementValid(grid, row, column, value);
 
   }
 
