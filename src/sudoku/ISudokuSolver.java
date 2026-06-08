@@ -37,7 +37,7 @@ public interface ISudokuSolver {
 
   /**
    * Checks whether setting a given cell to a certain value would follow the rules of Sudoku.
-   * <p>Coordinates are indexed from (0, 0), which is the upper left-most square in the grid.
+   * <p>Coordinates are indexed from (0, 0), which is the upper left-most cell in the grid.
    * @author Jamie
    * @param row the row (x-coordinate) of the cell to check.
    * @param column the column (y-coordinate) of the cell to check.
@@ -48,7 +48,7 @@ public interface ISudokuSolver {
 
   /**
    * General purpose method to check whether a move is legal in a given grid state.
-   * <p>Coordinates are indexed from (0, 0), which is the upper left-most square in the grid.
+   * <p>Coordinates are indexed from (0, 0), which is the upper left-most cell in the grid.
    * 
    * @author Jamie
    * @param grid_to_check The current state of the grid to check.
@@ -70,7 +70,7 @@ public interface ISudokuSolver {
       }
     }
 
-    // Check if any cell in the square is a duplicate
+    // Check if any cell in the box is a duplicate
     int top_left_row = row - row % 3;
     int top_left_col = column - column % 3;
 

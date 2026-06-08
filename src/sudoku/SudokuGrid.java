@@ -42,8 +42,8 @@ public class SudokuGrid implements ISudokuGrid {
           // In every row n, where n is a multiple of 3:
           if (row % 3 == 0) {
 
-            // 5 characters per square; 3 characters per seperator
-            // Num seperators = num squares - 1
+            // 5 characters per box; 3 characters per seperator
+            // Num seperators = num boxes - 1
             int num_columns = (size * 5) + ((size - 1) * 3);
 
             for (int i = 0; i < num_columns; i++) {
