@@ -142,10 +142,18 @@ public class SudokuGrid implements ISudokuGrid {
     }
   }
 
+  /** Initialises an empty 9x9 sudoku grid. */
   public SudokuGrid() {
     initialiseAttributes(DEFAULT_SIZE);
   }
 
+  /**
+   * Initialises an empty sudoku grid with the given size.
+   * <p> A size of 9 means that each square in the sudoku grid contains the numbers 1-9.
+   * <p> Sizes supported are all values {@code x}, where {@code 2 <= x <= 16}, and {@code x} is
+   * either even, square, or both.
+   * @param size The size of the sudoku grid to generate
+   */
   public SudokuGrid(int size) {
     throw new UnsupportedOperationException();
   }
