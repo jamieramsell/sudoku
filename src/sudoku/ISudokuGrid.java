@@ -2,6 +2,25 @@ package sudoku;
 
 public interface ISudokuGrid {
 
+  // Constants
+  public final int DEFAULT_SIZE = 9;
+  
+  /**
+   * Validates the size of a sudoku grid.
+   * <p> Sizes supported are all values {@code x}, where {@code 2 <= x <= 16}, and {@code x} is
+   * either even, square, or both.
+   * @param size The size to check.
+   * @throws IllegalArgumentException if the size given is not valid.
+   */
+  public static void validateGridSize(int size) {
+    if (size < 2 || size > 16 || (size % 2 != 0 && size % size != 0)) {
+      throw new IllegalArgumentException("size must meet the following conditions:\n"
+          + "* 2 <= size <= 16;`n"
+          + "* size must be even, square, or both."
+      );
+    }
+  }
+
   /**
    * Gets the current value of a cell in a sudoku grid.
    * <p>Coordinates are indexed from (0, 0), which is the upper left-most cell in the grid.
