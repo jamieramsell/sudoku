@@ -41,10 +41,11 @@ public class SudokuGrid implements ISudokuGrid {
           if (row % rows_per_box == 0) {
 
             // Calculate num characters per box; add 3 characters per seperator
-            // Num seperators = num boxes - 1
+            // Num seperators = num boxes per row - 1
             int num_cols_in_box = box_dimensions.second();
             int chars_per_box_row = (num_cols_in_box * 2) - 1;
-            int num_columns = chars_per_box_row + ((size - 1) * 3);
+            int num_boxes_per_row = size / box_dimensions.second();
+            int num_columns = chars_per_box_row * num_boxes_per_row + (num_boxes_per_row - 1) * 3;
 
             for (int i = 0; i < num_columns; i++) {
               string_builder_cache.append("-");
