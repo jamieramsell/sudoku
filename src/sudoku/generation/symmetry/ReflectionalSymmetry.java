@@ -10,8 +10,8 @@ import sudoku.Tuple2;
  */
 public class ReflectionalSymmetry extends AbstractSymmetry {
 
-  public ReflectionalSymmetry(int grid_cell_size) {
-    super(grid_cell_size);
+  public ReflectionalSymmetry(int size) {
+    super(size);
   }
 
   @Override
@@ -22,7 +22,7 @@ public class ReflectionalSymmetry extends AbstractSymmetry {
     cells.add(new Tuple2<>(row, col));
 
     // Vertical mirror symmetry (left-right)
-    int sym_col = grid_cell_size - 1 - col;
+    int sym_col = size - 1 - col;
     if (sym_col != col) {
       cells.add(new Tuple2<>(row, sym_col));
     }

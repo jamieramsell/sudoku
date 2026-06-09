@@ -18,6 +18,12 @@ public interface ISudokuSolver {
    */
   public boolean hasUniqueSolution();
 
+  /**
+   * Calculates the number of solutions that a sudoku puzzle currently has.
+   * <p> Note that this method is only safe to call on grids which are near-complete, as calling on 
+   * a grid with many possible solutions may result in an OutOfMemoryError.
+   * @return the number of possible solutions of the grid in its current state.
+   */
   public int countSolutions();
   
   /**
@@ -39,8 +45,8 @@ public interface ISudokuSolver {
    * Checks whether setting a given cell to a certain value would follow the rules of Sudoku.
    * <p>Coordinates are indexed from (0, 0), which is the upper left-most cell in the grid.
    * @author Jamie
-   * @param row the row (x-coordinate) of the cell to check.
-   * @param column the column (y-coordinate) of the cell to check.
+   * @param row the row (y-coordinate) of the cell to check.
+   * @param column the column (x-coordinate) of the cell to check.
    * @param value the value to test.
    * @return whether the value can be legally placed in the cell
    */
@@ -53,8 +59,8 @@ public interface ISudokuSolver {
    * only whether or not the placement of a specific cell is. 
    * @author Jamie
    * @param grid_to_check The current state of the grid to check.
-   * @param row The row (x-coordinate) of the cell to check.
-   * @param column The column (y-coordinate) of the cell to check
+   * @param row The row (y-coordinate) of the cell to check.
+   * @param column The column (x-coordinate) of the cell to check
    * @param value The value to be checked.
    * @return Whether {@code value} can be inserted into {@code grid_to_check} at
    * {@code (row, column)}.
@@ -74,20 +80,21 @@ public interface ISudokuSolver {
     /* First check all cells in the row, then all cells in the column.
      * Ignore the target cell itself.
      */
-    for (int current_row = 0; current_row < rows; current_row++) {
-      if (current_row == row) {
-        continue;
-      }
-      if (grid_to_check.getValue(current_row, column) == value) {
-        return false;
-      }
-    }
 
     for (int current_col = 0; current_col < cols; current_col++) {
       if (current_col == column) {
         continue;
       }
       if (grid_to_check.getValue(row, current_col) == value) {
+        return false;
+      }
+    }
+
+    for (int current_row = 0; current_row < rows; current_row++) {
+      if (current_row == row) {
+        continue;
+      }
+      if (grid_to_check.getValue(current_row, column) == value) {
         return false;
       }
     }

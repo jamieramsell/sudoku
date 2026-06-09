@@ -10,8 +10,8 @@ import sudoku.Tuple2;
  */
 public class NoSymmetry extends AbstractSymmetry {
 
-  public NoSymmetry(int grid_cell_size) {
-    super(grid_cell_size);
+  public NoSymmetry(int size) {
+    super(size);
   }
 
   @Override

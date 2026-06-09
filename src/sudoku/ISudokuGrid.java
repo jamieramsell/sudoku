@@ -3,7 +3,7 @@ package sudoku;
 public interface ISudokuGrid extends ISudokuState {
 
   // Constants
-  public final int DEFAULT_SIZE = 9;
+  public static final int DEFAULT_SIZE = 9;
   
   /**
    * Validates the size of a sudoku grid.
@@ -15,7 +15,7 @@ public interface ISudokuGrid extends ISudokuState {
   public static void validateGridSize(int size) {
     if (size < 2 || size > 16 || (size % 2 != 0 && !SudokuBox.isSquare(size))) {
       throw new IllegalArgumentException("size must meet the following conditions:\n"
-          + "* 2 <= size <= 16;`n"
+          + "* 2 <= size <= 16;\n"
           + "* size must be even, square, or both."
       );
     }

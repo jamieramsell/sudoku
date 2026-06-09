@@ -60,10 +60,10 @@ class SudokuGridState implements ISudokuState {
 
   @Override
   public boolean checkForDuplicates(int row, int column) {
-    Tuple2<ISudokuState, Tuple2<Integer, Integer>> box_data = findBoxOfCell(row, column);
-    ISudokuState box_containing_cell = box_data.first();
-    int cell_row = box_data.second().first();
-    int cell_col = box_data.second().second();
+    BoxLocation box_data = findBoxOfCell(row, column);
+    ISudokuState box_containing_cell = box_data.box();
+    int cell_row = box_data.row();
+    int cell_col = box_data.column();
 
     return box_containing_cell.checkForDuplicates(cell_row, cell_col);
   }  
@@ -79,10 +79,10 @@ class SudokuGridState implements ISudokuState {
   public int getValue(int row, int column) {
     validateCoordinates(row, column);
 
-    Tuple2<ISudokuState, Tuple2<Integer, Integer>> box_data = findBoxOfCell(row, column);
-    ISudokuState box_containing_cell = box_data.first();
-    int cell_row = box_data.second().first();
-    int cell_col = box_data.second().second();
+    BoxLocation box_data = findBoxOfCell(row, column);
+    ISudokuState box_containing_cell = box_data.box();
+    int cell_row = box_data.row();
+    int cell_col = box_data.column();
 
     // Find cell value & return
     int cell_value = box_containing_cell.getValue(cell_row, cell_col);
@@ -105,10 +105,10 @@ class SudokuGridState implements ISudokuState {
           " inclusive.");
     } 
 
-    Tuple2<ISudokuState, Tuple2<Integer, Integer>> box_data = findBoxOfCell(row, column);
-    ISudokuState box_containing_cell = box_data.first();
-    int cell_row = box_data.second().first();
-    int cell_col = box_data.second().second();
+    BoxLocation box_data = findBoxOfCell(row, column);
+    ISudokuState box_containing_cell = box_data.box();
+    int cell_row = box_data.row();
+    int cell_col = box_data.column();
     
     box_containing_cell.setValue(cell_row, cell_col, value);
   }
@@ -197,7 +197,7 @@ class SudokuGridState implements ISudokuState {
    * @returns A {@code Tuple2}, which contains the {@code ISudokuState}, as well as another tuple,
    * which itself contains the relative row and column of the cell respectively.
    */
-  private Tuple2<ISudokuState, Tuple2<Integer, Integer>> findBoxOfCell(int row, int col) {
+  private BoxLocation findBoxOfCell(int row, int col) {
     validateCoordinates(row, col);
 
     // Find the box in which the given cell is stored
@@ -210,10 +210,13 @@ class SudokuGridState implements ISudokuState {
     int cell_col = col % box_dimensions.second();
 
     // Generate & return required values
-    Tuple2<Integer, Integer> coordinates = new Tuple2<>(cell_row, cell_col);
-    Tuple2<ISudokuState, Tuple2<Integer, Integer>> return_value
-        = new Tuple2<>(box_containing_cell, coordinates);
-    return return_value;
+    return new BoxLocation(box_containing_cell, cell_row, cell_col);
   }
+
+  /** 
+   * Represents a 3-tuple of the {@code ISudokuState} which stores a cell, and the cell's relative
+   * coordinates inside of that {@code ISudokuState}.
+   */
+  private record BoxLocation(ISudokuState box, int row, int column) {}
 
 }

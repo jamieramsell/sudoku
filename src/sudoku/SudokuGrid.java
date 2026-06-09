@@ -37,7 +37,7 @@ public class SudokuGrid implements ISudokuGrid {
           string_builder_cache.append("\n\n");
 
           // Underneath every box, add a line of dashes
-          final int rows_per_box = box_dimensions.first();
+          int rows_per_box = box_dimensions.first();
           if (row % rows_per_box == 0) {
 
             // Calculate num characters per box; add 3 characters per seperator
@@ -60,7 +60,7 @@ public class SudokuGrid implements ISudokuGrid {
         int row_start_index = string_builder_cache.length();
         string_builder_cache.append(formatRow(row));
         int row_end_index = string_builder_cache.length();
-        row_indices.set(row, new Tuple2<>(row_start_index, row_end_index));
+        row_indices.add(row, new Tuple2<>(row_start_index, row_end_index));
 
       }
 
@@ -76,7 +76,7 @@ public class SudokuGrid implements ISudokuGrid {
         if (column > 0) {
           row_output.append(' ');
 
-          if (column % 3 == 0) {
+          if (column % box_dimensions.second() == 0) {
             row_output.append("| ");
           }
         }
@@ -113,7 +113,7 @@ public class SudokuGrid implements ISudokuGrid {
     }
     
     public String getCache() {
-      updatedirty_rowsInCache();
+      updateDirtyRowsInCache();
       if (cache == null) { // If cache has been updated, regenerate it
         cache = string_builder_cache.toString();
       }
@@ -124,7 +124,7 @@ public class SudokuGrid implements ISudokuGrid {
      * Convenience method to update cache to reflect any changes since the last update.
      * <p> This method must always be called before StringCache.cache is accessed.
      */
-    private void updatedirty_rowsInCache() {
+    private void updateDirtyRowsInCache() {
       if (dirty_rows == null) { // If no rows are dirty then there is nothing to update
         return;
       }
@@ -138,12 +138,12 @@ public class SudokuGrid implements ISudokuGrid {
     }
 
     // Convenience function to replace an outdated row in cache.
-    private void replaceRowInCache(int row, String newRowString) {
+    private void replaceRowInCache(int row, String new_row_string) {
       int row_start = row_indices.get(row).first();
       int row_end = row_indices.get(row).second();
 
-      // Update string_builder_cache
-      string_builder_cache.replace(row_start, row_end, newRowString);
+      // Update string_builder_cache. Note that lines always remain the same size.
+      string_builder_cache.replace(row_start, row_end, new_row_string);
     }
   }
 
