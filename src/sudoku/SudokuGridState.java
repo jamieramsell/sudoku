@@ -184,7 +184,7 @@ public class SudokuGridState implements ISudokuState {
    * @throws IndexOutOfBoundsException if the given cell is out of bounds of the grid.
    */
   private void validateCoordinates(int row, int col) {
-    if (row < 0 || col < 0 || row > size || col > size) {
+    if (row < 0 || col < 0 || row >= size || col >= size) {
       throw new IndexOutOfBoundsException("Target cell does not exist within the grid.");
     }
   }
