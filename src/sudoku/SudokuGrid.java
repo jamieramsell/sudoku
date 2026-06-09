@@ -179,8 +179,8 @@ public class SudokuGrid implements ISudokuGrid {
 
   @Override
   public void resetGrid() {
-    for (int row = 0; row < size * size; row++) {
-      for (int col = 0; col < size * size; col++) {
+    for (int row = 0; row < size; row++) {
+      for (int col = 0; col < size; col++) {
         grid.setValue(row, col, -1);
       }
       string_cache.markRowDirty(row);
