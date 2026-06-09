@@ -61,6 +61,12 @@ public interface ISudokuSolver {
    */
   public static boolean isPlacementValid(ISudokuState grid_to_check, int row, int column, int value) {
 
+    /* Work on a clone; set the value of the target cell to ensure the correct function of
+     * checkForDuplicates()
+     */
+    grid_to_check = grid_to_check.clone();
+    grid_to_check.setValue(row, column, value);
+
     Tuple2<Integer, Integer> grid_dimensions = grid_to_check.getGridDimensions();
     final int rows = grid_dimensions.first();
     final int cols = grid_dimensions.second();
