@@ -2,10 +2,10 @@ package sudoku.generation;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 import sudoku.ISudokuGrid;
 import sudoku.ISudokuSolver;
-import sudoku.GridState;
 import sudoku.SudokuGrid;
 import sudoku.SudokuSolver;
 import sudoku.Tuple2;
@@ -15,8 +15,8 @@ public class SudokuGenerator implements ISudokuGenerator{
 
   private final PuzzleDifficulty difficulty;
   private final AbstractSymmetry symmetry;
+  private final int grid_size;
   private ISudokuGrid grid;
-  private final int grid_cell_size;
   private ISudokuSolver solver;
 
   /**
@@ -33,7 +33,7 @@ public class SudokuGenerator implements ISudokuGenerator{
     this.difficulty = difficulty;
     this.symmetry = symmetry;
     this.grid = new SudokuGrid();
-    this.grid_cell_size = grid.getGrid().getCellSize();
+    this.grid_size = grid.getSize();
     this.solver = new SudokuSolver(grid);
   }
 
@@ -68,11 +68,11 @@ public class SudokuGenerator implements ISudokuGenerator{
    */
   private boolean fillGridBacktracking() {
     // Find the first empty cell
-    for (int row = 0; row < grid_cell_size; row++) {
-      for (int col = 0; col < grid_cell_size; col++) {
+    for (int row = 0; row < grid_size; row++) {
+      for (int col = 0; col < grid_size; col++) {
         if (grid.getValue(row, col) == -1) {
           // Try values in random order
-          int[] values = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+          int[] values = IntStream.rangeClosed(1, grid_size).toArray();
           shuffleArray(values);
           
           for (int value : values) {
@@ -127,17 +127,17 @@ public class SudokuGenerator implements ISudokuGenerator{
     int target_to_remove = randomInteger(min_cells, max_cells + 1);
     
     int cells_removed = 0;
-    boolean[][] removed_cells = new boolean[grid_cell_size][grid_cell_size];
+    boolean[][] removed_cells = new boolean[grid_size][grid_size];
     // Limit removal attempts to prevent infinite loops: multiply total cells by 3
     // to account for cells already removed and symmetry constraints
-    int max_removal_attempts = grid_cell_size * grid_cell_size * 3;
+    int max_removal_attempts = grid_size * grid_size * 3;
     int attempts = 0;
     
     while (cells_removed < target_to_remove && attempts < max_removal_attempts) {
       attempts++;
       
-      int row = randomInteger(0, grid_cell_size);
-      int col = randomInteger(0, grid_cell_size);
+      int row = randomInteger(0, grid_size);
+      int col = randomInteger(0, grid_size);
       
       // Skip if cell is already empty
       if (grid.getValue(row, col) == -1) {
@@ -190,7 +190,7 @@ public class SudokuGenerator implements ISudokuGenerator{
     // If unique solution is required, verify it
     if (hasUniqueSolution) {
       // Only need to find at most 2 solutions: if exactly 1, it's unique; if 2+, it's not unique
-      Set<GridState> solutions = solver.solveGrid(2);
+      Set<ISudokuGrid> solutions = solver.solveGrid(2);
       if (solutions.size() != 1) {
         // Puzzle has multiple or no solutions, reject and try again
         return false;
