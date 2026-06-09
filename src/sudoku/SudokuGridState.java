@@ -3,7 +3,7 @@ package sudoku;
 import java.util.List;
 import java.util.ArrayList;
 
-public class SudokuGridState implements ISudokuState {
+class SudokuGridState implements ISudokuState {
 
   private List<List<ISudokuState>> grid;
   private final int size;
