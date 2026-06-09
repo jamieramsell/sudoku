@@ -11,7 +11,7 @@ class SudokuBox implements ISudokuState {
    * size.
    */
   public static Tuple2<Integer, Integer> calculateBoxSize(int size) {
-    if (size < 2 || size > 16 || (size % 2 != 0 && size % size != 0)) {
+    if (size < 2 || size > 16 || (size % 2 != 0 && !isSquare(size))) {
       throw new IllegalArgumentException("size must meet the following conditions:\n"
           + "* 2 <= size <= 16;`n"
           + "* size must be even, square, or both."
