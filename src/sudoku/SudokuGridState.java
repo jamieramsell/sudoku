@@ -22,7 +22,7 @@ class SudokuGridState implements ISudokuState {
 
   /**
    * Initialises an empty sudoku grid with the given size.
-   * <p> A size of 9 means that each square in the sudoku grid contains the numbers 1-9.
+   * <p> A size of 9 means that each box in the sudoku grid contains the numbers 1-9.
    * <p> Sizes supported are all values {@code x}, where {@code 2 <= x <= 16}, and {@code x} is
    * either even, square, or both.
    * @param size The size of the sudoku grid to generate
