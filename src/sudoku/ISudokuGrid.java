@@ -13,7 +13,7 @@ public interface ISudokuGrid extends ISudokuState {
    * @throws IllegalArgumentException if the size given is not valid.
    */
   public static void validateGridSize(int size) {
-    if (size < 2 || size > 16 || (size % 2 != 0 && size % size != 0)) {
+    if (size < 2 || size > 16 || (size % 2 != 0 && SudokuBox.isSquare(size))) {
       throw new IllegalArgumentException("size must meet the following conditions:\n"
           + "* 2 <= size <= 16;`n"
           + "* size must be even, square, or both."

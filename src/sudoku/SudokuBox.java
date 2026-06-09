@@ -16,9 +16,12 @@ class SudokuBox implements ISudokuState {
           + "* 2 <= size <= 16;`n"
           + "* size must be even, square, or both."
       );
-    } else if (size % size == 0) { // Square value of size means square boxes.
-      int dimensions = size / size;
-      return new Tuple2<>(dimensions, dimensions);
+    } 
+
+    int n = (int) Math.sqrt(size);
+
+    if (isSquare(size)) { // Square value of size means square boxes.
+      return new Tuple2<>(n, n);
     }
 
     /* Any divisor n <= sqrt(size) gives a valid box.
@@ -26,13 +29,18 @@ class SudokuBox implements ISudokuState {
      * square-like pair), and always terminates at worst at n = 2, as size is always even or square.
      */
 
-    int n = (int) Math.sqrt(size);
     while (size % n != 0) {
       n--;
     }
 
     Tuple2<Integer, Integer> dimensions = new Tuple2<>(n, size / n);
     return dimensions;
+  }
+
+  /** Convenience method which checks whether a given value is square. */
+  static boolean isSquare(int value) {
+    int sqrt = (int) Math.sqrt(value);
+    return (sqrt * sqrt == value);
   }
 
   // Attributes
