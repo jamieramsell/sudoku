@@ -76,7 +76,7 @@ public class SudokuGrid implements ISudokuGrid {
         if (column > 0) {
           row_output.append(' ');
 
-          if (column % 3 == 0) {
+          if (column % box_dimensions.second() == 0) {
             row_output.append("| ");
           }
         }
