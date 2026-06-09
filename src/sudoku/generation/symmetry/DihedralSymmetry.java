@@ -15,10 +15,10 @@ public class DihedralSymmetry extends AbstractSymmetry {
   private RotationalSymmetry rotational;
   private ReflectionalSymmetry reflectional;
   
-  public DihedralSymmetry(int grid_cell_size) {
-    super(grid_cell_size);
-    rotational = new RotationalSymmetry(grid_cell_size);
-    reflectional = new ReflectionalSymmetry(grid_cell_size);
+  public DihedralSymmetry(int size) {
+    super(size);
+    rotational = new RotationalSymmetry(size);
+    reflectional = new ReflectionalSymmetry(size);
   }
 
   @Override

@@ -15,7 +15,7 @@ public class SudokuGenerator implements ISudokuGenerator{
 
   private final PuzzleDifficulty difficulty;
   private final AbstractSymmetry symmetry;
-  private final int grid_size;
+  private final int size;
   private ISudokuGrid grid;
   private ISudokuSolver solver;
 
@@ -33,7 +33,7 @@ public class SudokuGenerator implements ISudokuGenerator{
     this.difficulty = difficulty;
     this.symmetry = symmetry;
     this.grid = new SudokuGrid();
-    this.grid_size = grid.getSize();
+    this.size = grid.getSize();
     this.solver = new SudokuSolver(grid);
   }
 
@@ -68,11 +68,11 @@ public class SudokuGenerator implements ISudokuGenerator{
    */
   private boolean fillGridBacktracking() {
     // Find the first empty cell
-    for (int row = 0; row < grid_size; row++) {
-      for (int col = 0; col < grid_size; col++) {
+    for (int row = 0; row < size; row++) {
+      for (int col = 0; col < size; col++) {
         if (grid.getValue(row, col) == -1) {
           // Try values in random order
-          int[] values = IntStream.rangeClosed(1, grid_size).toArray();
+          int[] values = IntStream.rangeClosed(1, size).toArray();
           shuffleArray(values);
           
           for (int value : values) {
@@ -114,10 +114,10 @@ public class SudokuGenerator implements ISudokuGenerator{
    * <p>The number of cells to remove is determined by the difficulty of the
    * {@code SudokuGenerator}, which was assigned upon instantiation.
    * <p>This method acts directly upon {@code grid}, rather than returning an updated version.
-   * @param hasUniqueSolution Whether the resulting puzzle must have a unique solution
+   * @param has_unique_solution Whether the resulting puzzle must have a unique solution
    * @return whether the target number of cells to remove could be reached and constraints satisfied.
    */
-  private boolean removeCells(boolean hasUniqueSolution) {
+  private boolean removeCells(boolean has_unique_solution) {
     
     // Reinitialize solver with the current grid state to ensure consistency
     this.solver = new SudokuSolver(grid);
@@ -127,17 +127,17 @@ public class SudokuGenerator implements ISudokuGenerator{
     int target_to_remove = randomInteger(min_cells, max_cells + 1);
     
     int cells_removed = 0;
-    boolean[][] removed_cells = new boolean[grid_size][grid_size];
+    boolean[][] removed_cells = new boolean[size][size];
     // Limit removal attempts to prevent infinite loops: multiply total cells by 3
     // to account for cells already removed and symmetry constraints
-    int max_removal_attempts = grid_size * grid_size * 3;
+    int max_removal_attempts = size * size * 3;
     int attempts = 0;
     
     while (cells_removed < target_to_remove && attempts < max_removal_attempts) {
       attempts++;
       
-      int row = randomInteger(0, grid_size);
-      int col = randomInteger(0, grid_size);
+      int row = randomInteger(0, size);
+      int col = randomInteger(0, size);
       
       // Skip if cell is already empty
       if (grid.getValue(row, col) == -1) {
@@ -188,7 +188,7 @@ public class SudokuGenerator implements ISudokuGenerator{
     }
     
     // If unique solution is required, verify it
-    if (hasUniqueSolution) {
+    if (has_unique_solution) {
       // Only need to find at most 2 solutions: if exactly 1, it's unique; if 2+, it's not unique
       Set<ISudokuGrid> solutions = solver.solveGrid(2);
       if (solutions.size() != 1) {

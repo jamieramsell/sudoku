@@ -3,7 +3,7 @@ package sudoku;
 public interface ISudokuGrid extends ISudokuState {
 
   // Constants
-  public final int DEFAULT_SIZE = 9;
+  public static final int DEFAULT_SIZE = 9;
   
   /**
    * Validates the size of a sudoku grid.

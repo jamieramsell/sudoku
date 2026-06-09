@@ -39,40 +39,40 @@ public class SudokuSolver implements ISudokuSolver {
       "generate all possible solutions.");
     }
 
-    ISudokuGrid workingGrid = grid.clone();
+    ISudokuGrid working_grid = grid.clone();
     Set<ISudokuGrid> solutions = new HashSet<>();
 
-    if (!grid.isValid() || !ISudokuSolver.isGridStateValid(workingGrid)) {
+    if (!grid.isValid() || !ISudokuSolver.isGridStateValid(working_grid)) {
       return solutions;
     }
 
-    solve(workingGrid, solutions, solutions_required);
+    solve(working_grid, solutions, solutions_required);
     return solutions;
   }
 
   // Convenience method to contain the exhaustive search which finds all solutions to a puzzle in
   // a given state.
-  private static void solve(ISudokuGrid workingGrid, Set<ISudokuGrid> solutions,
+  private static void solve(ISudokuGrid working_grid, Set<ISudokuGrid> solutions,
       int solutions_required) {
 
     if (solutions.size() == solutions_required) {
       return;
     }
 
-    Tuple2<Integer, Integer> emptyCell = findNextEmptyCell(workingGrid);
-    if (emptyCell == null) {
-      solutions.add(workingGrid.clone());
+    Tuple2<Integer, Integer> empty_cell = findNextEmptyCell(working_grid);
+    if (empty_cell == null) {
+      solutions.add(working_grid.clone());
       return;
     }
 
-    int row = emptyCell.first();
-    int column = emptyCell.second();
+    int row = empty_cell.first();
+    int column = empty_cell.second();
 
-    for (int candidate = 1; candidate <= workingGrid.getSize(); candidate++) {
-      if (ISudokuSolver.isPlacementValid(workingGrid, row, column, candidate)) {
-        workingGrid.setValue(row, column, candidate);
-        solve(workingGrid, solutions, solutions_required);
-        workingGrid.setValue(row, column, -1);
+    for (int candidate = 1; candidate <= working_grid.getSize(); candidate++) {
+      if (ISudokuSolver.isPlacementValid(working_grid, row, column, candidate)) {
+        working_grid.setValue(row, column, candidate);
+        solve(working_grid, solutions, solutions_required);
+        working_grid.setValue(row, column, -1);
       }
     }
 

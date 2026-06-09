@@ -10,10 +10,10 @@ import sudoku.Tuple2;
  */
 public abstract class AbstractSymmetry {
 
-  protected final int grid_cell_size;
+  protected final int size;
 
-  public AbstractSymmetry(int grid_cell_size) {
-    this.grid_cell_size = grid_cell_size;
+  public AbstractSymmetry(int size) {
+    this.size = size;
   }
 
   /**
@@ -25,9 +25,9 @@ public abstract class AbstractSymmetry {
   public abstract List<Tuple2<Integer, Integer>> getSymmetricCells(int row, int col);
 
   protected void checkBounds(int row, int col) {
-    if (row < 0 || row >= grid_cell_size) {
+    if (row < 0 || row >= size) {
       throw new IndexOutOfBoundsException("row does not exist within the sudoku grid.");
-    } else if (col < 0 || col >= grid_cell_size) {
+    } else if (col < 0 || col >= size) {
       throw new IndexOutOfBoundsException("col does not exist within the sudoku grid.");
     }
   }

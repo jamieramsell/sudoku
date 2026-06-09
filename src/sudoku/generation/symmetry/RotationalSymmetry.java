@@ -11,8 +11,8 @@ import sudoku.Tuple2;
  */
 public class RotationalSymmetry extends AbstractSymmetry {
 
-  public RotationalSymmetry(int grid_cell_size) {
-    super(grid_cell_size);
+  public RotationalSymmetry(int size) {
+    super(size);
   }
 
   @Override
@@ -23,8 +23,8 @@ public class RotationalSymmetry extends AbstractSymmetry {
     cells.add(new Tuple2<>(row, col));
     
     // 180-degree rotational symmetry
-    int sym_row = grid_cell_size - 1 - row;
-    int sym_col = grid_cell_size - 1 - col;
+    int sym_row = size - 1 - row;
+    int sym_col = size - 1 - col;
     if (sym_row != row || sym_col != col) {
       cells.add(new Tuple2<>(sym_row, sym_col));
     }
