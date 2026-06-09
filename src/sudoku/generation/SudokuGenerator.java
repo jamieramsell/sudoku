@@ -40,8 +40,10 @@ public class SudokuGenerator implements ISudokuGenerator{
   @Override
   public ISudokuGrid generatePuzzle(boolean hasUniqueSolution) {
     
-    // Try to generate a random puzzle until one has been found which can have the required number
-    // of target cells removed.
+    /* Try to generate a random puzzle until one has been found which can have the required number
+     * of target cells removed.
+     * Loop is bounded by max_removal_attempts of removeCells.
+     */
     do {
       generateFullGrid();
     } while (!removeCells(hasUniqueSolution));
