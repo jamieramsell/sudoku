@@ -60,7 +60,7 @@ public class SudokuGrid implements ISudokuGrid {
         int row_start_index = string_builder_cache.length();
         string_builder_cache.append(formatRow(row));
         int row_end_index = string_builder_cache.length();
-        row_indices.set(row, new Tuple2<>(row_start_index, row_end_index));
+        row_indices.add(row, new Tuple2<>(row_start_index, row_end_index));
 
       }
 
