@@ -4,26 +4,31 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Build & Test Commands
 
-This is a Java project configured for VS Code with the Java Extension Pack. Compilation output goes to `bin/`, source is in `src/`, and dependencies are in `lib/`.
+This is a Java project configured for VS Code with the Java Extension Pack. Production source is in `src/main/java/`, tests are in `src/test/java/` (both mirroring the `sudoku` package structure), compilation output goes to `bin/`, and dependencies are in `lib/`.
 
-**Compile:**
+**Compile main sources:**
 ```bash
-javac -cp "lib/*" -d bin $(find src -name "*.java")
+javac -d bin/main $(find src/main/java -name "*.java")
+```
+
+**Compile tests:**
+```bash
+javac -cp "bin/main:lib/*" -d bin/test $(find src/test/java -name "*.java")
 ```
 
 **Run all tests** (JUnit 4):
 ```bash
-java -cp "bin:lib/*" org.junit.runner.JUnitCore <TestClassName>
+java -cp "bin/main:bin/test:lib/*" org.junit.runner.JUnitCore sudoku.AllTests
 ```
 
 **Run a single test:**
 ```bash
-java -cp "bin:lib/*" org.junit.runner.JUnitCore sudoku.<TestClassName>
+java -cp "bin/main:bin/test:lib/*" org.junit.runner.JUnitCore sudoku.<TestClassName>
 ```
 
 **Regenerate Javadoc:**
 ```bash
-javadoc -d docs -sourcepath src -subpackages sudoku
+javadoc -d docs -sourcepath src/main/java -subpackages sudoku
 ```
 
 Dependencies: `lib/junit-4.13.2.jar` and `lib/hamcrest-core-1.3.jar`.
