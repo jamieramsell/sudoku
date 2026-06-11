@@ -11,4 +11,4 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      - run: cd event-service && ./mvnw checkstyle:check
+      - run: ./mvnw checkstyle:check
