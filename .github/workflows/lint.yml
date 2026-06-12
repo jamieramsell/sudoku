@@ -11,4 +11,10 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      - run: ./mvnw checkstyle:check
+      - name: Download Checkstyle
+        run: |
+          curl -L -o checkstyle.jar \
+            https://github.com/checkstyle/checkstyle/releases/download/checkstyle-10.17.0/checkstyle-10.17.0-all.jar
+      - name: Run Checkstyle
+        run: |
+          java -jar checkstyle.jar -c checkstyle.xml $(find src/main/java -name "*.java")
