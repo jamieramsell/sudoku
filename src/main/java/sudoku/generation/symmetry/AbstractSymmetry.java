@@ -28,6 +28,12 @@ public abstract class AbstractSymmetry {
    */
   public abstract List<Tuple2<Integer, Integer>> getSymmetricCells(int row, int col);
 
+  /**
+   * Verifies that the given {@code (row, col)} coordinate falls within the sudoku grid.
+   * @param row The row (or y-coordinate) of the cell to check
+   * @param col The column (or x-coordinate) of the cell to check
+   * @throws IndexOutOfBoundsException if the given coordinate is out of bounds.
+   */
   protected void checkBounds(int row, int col) {
     if (row < 0 || row >= size) {
       throw new IndexOutOfBoundsException("row does not exist within the sudoku grid.");
