@@ -1,5 +1,9 @@
 package sudoku;
 
+/**
+ * Represents a Sudoku grid, providing higher-level operations on top of the basic
+ * {@link ISudokuState} cell access.
+ */
 public interface ISudokuGrid extends ISudokuState {
 
   // Constants

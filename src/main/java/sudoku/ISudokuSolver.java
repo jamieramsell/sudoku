@@ -2,6 +2,10 @@ package sudoku;
 
 import java.util.Set;
 
+/**
+ * Provides operations for solving a Sudoku grid and for validating cell placements and grid
+ * states.
+ */
 public interface ISudokuSolver {
 
   /**

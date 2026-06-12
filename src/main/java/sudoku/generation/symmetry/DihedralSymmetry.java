@@ -14,7 +14,12 @@ public class DihedralSymmetry extends AbstractSymmetry {
 
   private RotationalSymmetry rotational;
   private ReflectionalSymmetry reflectional;
-  
+
+  /**
+   * Creates a dihedral (rotational and reflectional) symmetry strategy for a grid of the given
+   * size.
+   * @param size The size of the Sudoku grid that cells will be removed from.
+   */
   public DihedralSymmetry(int size) {
     super(size);
     rotational = new RotationalSymmetry(size);

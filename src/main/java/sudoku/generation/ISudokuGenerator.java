@@ -3,6 +3,9 @@ package sudoku.generation;
 import sudoku.Tuple2;
 import sudoku.ISudokuGrid;
 
+/**
+ * Generates 9x9 Sudoku puzzles at a given difficulty and cell-removal symmetry.
+ */
 public interface ISudokuGenerator {
 
   /**
@@ -50,7 +53,7 @@ public interface ISudokuGenerator {
   }
 
   /**
-   * Generates the initial grid for a random Sudoku puzzle.
+   * Generates the initial grid for a random 9x9 Sudoku puzzle.
    * @param hasUniqueSolution Whether or not the generated puzzle should only have one solution.
    * Note that the removal of the requirement of having a unique solution can make solving a puzzle
    * much less challenging.

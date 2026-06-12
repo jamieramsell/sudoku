@@ -3,10 +3,18 @@ package sudoku;
 import java.util.Set;
 import java.util.HashSet;
 
+/**
+ * Solves a Sudoku grid using recursive backtracking.
+ */
 public class SudokuSolver implements ISudokuSolver {
 
   private final ISudokuGrid grid;
 
+  /**
+   * Creates a solver which operates on the given grid.
+   * @param grid The grid to solve. The grid itself is not modified; solving methods operate on
+   * clones of it.
+   */
   public SudokuSolver(ISudokuGrid grid) {
     this.grid = grid;
   }

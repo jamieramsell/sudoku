@@ -10,6 +10,10 @@ import sudoku.Tuple2;
  */
 public class ReflectionalSymmetry extends AbstractSymmetry {
 
+  /**
+   * Creates a reflectional symmetry strategy for a grid of the given size.
+   * @param size The size of the Sudoku grid that cells will be removed from.
+   */
   public ReflectionalSymmetry(int size) {
     super(size);
   }

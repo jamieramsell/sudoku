@@ -11,6 +11,10 @@ import sudoku.Tuple2;
  */
 public class RotationalSymmetry extends AbstractSymmetry {
 
+  /**
+   * Creates a rotational symmetry strategy for a grid of the given size.
+   * @param size The size of the Sudoku grid that cells will be removed from.
+   */
   public RotationalSymmetry(int size) {
     super(size);
   }

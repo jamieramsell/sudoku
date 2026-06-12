@@ -3,6 +3,11 @@ package sudoku;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * Public-facing representation of a Sudoku grid.
+ * <p> Wraps a {@link SudokuGridState} and adds a cached, dirty-row-invalidated string
+ * representation via the internal {@link StringCache}.
+ */
 public class SudokuGrid implements ISudokuGrid {
 
   // Attributes

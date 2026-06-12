@@ -12,6 +12,10 @@ public abstract class AbstractSymmetry {
 
   protected final int size;
 
+  /**
+   * Creates a symmetry strategy for a grid of the given size.
+   * @param size The size of the Sudoku grid that cells will be removed from.
+   */
   public AbstractSymmetry(int size) {
     this.size = size;
   }

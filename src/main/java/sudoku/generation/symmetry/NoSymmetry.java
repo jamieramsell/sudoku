@@ -10,6 +10,10 @@ import sudoku.Tuple2;
  */
 public class NoSymmetry extends AbstractSymmetry {
 
+  /**
+   * Creates a no-symmetry strategy for a grid of the given size.
+   * @param size The size of the Sudoku grid that cells will be removed from.
+   */
   public NoSymmetry(int size) {
     super(size);
   }

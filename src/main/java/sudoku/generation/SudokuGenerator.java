@@ -11,6 +11,10 @@ import sudoku.SudokuSolver;
 import sudoku.Tuple2;
 import sudoku.generation.symmetry.AbstractSymmetry;
 
+/**
+ * Generates 9x9 Sudoku puzzles by producing a full valid grid and then removing cells according to
+ * a target {@link PuzzleDifficulty} and {@link AbstractSymmetry} pattern.
+ */
 public class SudokuGenerator implements ISudokuGenerator{
 
   private final PuzzleDifficulty difficulty;
