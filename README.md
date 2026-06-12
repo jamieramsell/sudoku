@@ -4,6 +4,7 @@
 
 [![Java](https://img.shields.io/badge/java-11+-orange.svg)](https://openjdk.org)
 [![JUnit](https://img.shields.io/badge/tests-JUnit%204-brightgreen.svg)](https://junit.org/junit4/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ---
 
@@ -148,3 +149,9 @@ Contributions are welcome. Please open an issue before submitting a pull request
 5. Open a pull request
 
 Commit messages should follow the [Conventional Commits](https://www.conventionalcommits.org/) specification.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
