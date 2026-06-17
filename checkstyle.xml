@@ -63,9 +63,11 @@
     <module name="SimplifyBooleanExpression"/>
     <module name="SimplifyBooleanReturn"/>
     <module name="EmptyStatement"/>
-    <module name="LineLength">
-      <property name="max" value="150"/>
-      <property name="ignorePattern" value="^import |^package |@see |@link"/>
-    </module>
+  </module>
+
+  <!-- LineLength must be a direct child of Checker, not TreeWalker. -->
+  <module name="LineLength">
+    <property name="max" value="150"/>
+    <property name="ignorePattern" value="^import |^package |@see |@link"/>
   </module>
 </module>
