@@ -54,11 +54,11 @@ public interface ISudokuGenerator {
 
   /**
    * Generates the initial grid for a random 9x9 Sudoku puzzle.
-   * @param hasUniqueSolution Whether or not the generated puzzle should only have one solution.
+   * @param has_unique_solution Whether or not the generated puzzle should only have one solution.
    * Note that the removal of the requirement of having a unique solution can make solving a puzzle
    * much less challenging.
    * @return an {@link ISudokuGrid} representing the initial state of the puzzle.
    */
-  public ISudokuGrid generatePuzzle(boolean hasUniqueSolution);
+  public ISudokuGrid generatePuzzle(boolean has_unique_solution);
 
 }
