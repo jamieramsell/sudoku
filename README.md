@@ -2,7 +2,8 @@
 
 > A Java library for representing, solving, and generating Sudoku puzzles of variable grid sizes.
 
-[![Java](https://img.shields.io/badge/java-11+-orange.svg)](https://openjdk.org)
+[![Build](https://github.com/jamieramsell/sudoku/actions/workflows/build.yml/badge.svg)](https://github.com/jamieramsell/sudoku/actions/workflows/build.yml)
+[![Java](https://img.shields.io/badge/java-21+-orange.svg)](https://openjdk.org)
 [![JUnit](https://img.shields.io/badge/tests-JUnit%204-brightgreen.svg)](https://junit.org/junit4/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -87,13 +88,13 @@ sudoku/
 │                       ├── ReflectionalSymmetryTest.java
 │                       └── RotationalSymmetryTest.java
 │
-├── lib/
-│   ├── junit-4.13.2.jar
-│   └── hamcrest-core-1.3.jar
-│
-├── bin/
-├── docs/
-├── .github/
+├── pom.xml          # Maven build (coordinates io.github.jamieramsell:sudoku)
+├── mvnw             # Maven Wrapper (no global Maven install required)
+├── mvnw.cmd
+├── .mvn/
+├── checkstyle.xml   # snake_case style rules, enforced by the build
+├── docs/            # generated Javadoc
+├── .github/         # CI workflow and issue/PR templates
 └── README.md
 ```
 
@@ -103,31 +104,39 @@ sudoku/
 
 ### Prerequisites
 
-- JDK 11+
-- `lib/junit-4.13.2.jar` and `lib/hamcrest-core-1.3.jar` (included)
+- JDK 21+
+- No Maven install needed — use the bundled Maven Wrapper (`./mvnw`). Dependencies (JUnit 4 + Hamcrest) are resolved from Maven Central.
 
-### Compile main sources
+### Build, test, and lint
 
-```bash
-javac -d bin/main $(find src/main/java -name "*.java")
-```
-
-### Compile tests
+`verify` compiles the sources, runs the JUnit suite, and runs Checkstyle in one pass, producing `target/sudoku-<version>.jar` and a sources jar:
 
 ```bash
-javac -cp "bin/main:lib/*" -d bin/test $(find src/test/java -name "*.java")
+./mvnw clean verify
 ```
 
 ### Run all tests
 
 ```bash
-java -cp "bin/main:bin/test:lib/*" org.junit.runner.JUnitCore sudoku.AllTests
+./mvnw test
 ```
 
-### Run a single test
+### Run a single test class
 
 ```bash
-java -cp "bin/main:bin/test:lib/*" org.junit.runner.JUnitCore sudoku.<TestClassName>
+./mvnw test -Dtest=<TestClassName>
+```
+
+### Use as a dependency
+
+The library is published to GitHub Packages. After [authenticating to GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry), declare:
+
+```xml
+<dependency>
+  <groupId>io.github.jamieramsell</groupId>
+  <artifactId>sudoku</artifactId>
+  <version>1.0.1</version>
+</dependency>
 ```
 
 ### Regenerate Javadoc

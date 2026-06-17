@@ -4,34 +4,37 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Build & Test Commands
 
-This is a Java project configured for VS Code with the Java Extension Pack. Production source is in `src/main/java/`, tests are in `src/test/java/` (both mirroring the `sudoku` package structure), compilation output goes to `bin/`, and dependencies are in `lib/`.
+This is a Maven project (`pom.xml`, coordinates `io.github.jamieramsell:sudoku`) following the standard layout: production source in `src/main/java/`, tests in `src/test/java/` (both mirroring the `sudoku` package structure). Maven build output goes to `target/`. Use the Maven Wrapper (`./mvnw`) so no global Maven install is required; dependencies (JUnit 4.13.2 + transitive Hamcrest) are resolved from Maven Central.
 
-**Compile main sources:**
+**Compile, test, lint, and package (builds `target/sudoku-<version>.jar` + sources jar):**
 ```bash
-javac -d bin/main $(find src/main/java -name "*.java")
+./mvnw clean verify
 ```
 
-**Compile tests:**
+**Run all tests** (JUnit 4 via Surefire — discovers `*Test` classes directly; the `AllTests` suite is excluded to avoid double-running):
 ```bash
-javac -cp "bin/main:lib/*" -d bin/test $(find src/test/java -name "*.java")
+./mvnw test
 ```
 
-**Run all tests** (JUnit 4):
+**Run a single test class:**
 ```bash
-java -cp "bin/main:bin/test:lib/*" org.junit.runner.JUnitCore sudoku.AllTests
+./mvnw test -Dtest=<TestClassName>
 ```
 
-**Run a single test:**
+**Run Checkstyle only** (uses `checkstyle.xml`, the project's snake_case rules; bound to the `verify` phase):
 ```bash
-java -cp "bin/main:bin/test:lib/*" org.junit.runner.JUnitCore sudoku.<TestClassName>
+./mvnw checkstyle:check
+```
+
+**Publish the library JAR to GitHub Packages:**
+```bash
+./mvnw deploy
 ```
 
 **Regenerate Javadoc:**
 ```bash
 javadoc -d docs -sourcepath src/main/java -subpackages sudoku
 ```
-
-Dependencies: `lib/junit-4.13.2.jar` and `lib/hamcrest-core-1.3.jar`.
 
 ## Architecture
 
