@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.2] - 2026-06-17
+### Added
+- `jitpack.yml` pinning the JitPack build to OpenJDK 21, so the library can be consumed via JitPack (JitPack's default JDK 8 cannot compile the project's Java 21 records).
+
 ## [1.0.1] - 2026-06-17
 ### Added
 - Maven build (`pom.xml`) producing a publishable library JAR plus a sources JAR, with the JUnit test suite and Checkstyle wired into the build lifecycle.

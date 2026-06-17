@@ -1,0 +1,4 @@
+# JitPack builds with OpenJDK 8 by default; this project uses Java 21 language
+# features (records), so pin the build JDK to 21.
+jdk:
+  - openjdk21
